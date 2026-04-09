@@ -996,12 +996,14 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
           // =====================================================================
           // EXPORTAR/IMPORTAR E CALENDÁRIO
           // =====================================================================
-          const addToCalendar = () => {
+         const addToCalendar = async () => {
              if(!clientName || !selectedDate) {
                  setError("Preencha o Nome e a Data para marcar na agenda.");
                  setTimeout(() => setError(''), 3000);
                  return;
              }
+
+             // 1. Abrir Google Calendar
              const [y, m, d] = selectedDate.split('-');
              const startDate = `${y}${m}${d}`;
              
@@ -1016,8 +1018,71 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
              const details = encodeURIComponent(`Telefone: ${clientPhone}\nConvidados: ${guests}\nHorário: ${eventTime}`);
              const location = encodeURIComponent(`Villa dos Anjos, Av. Alberto Leal, 45, Candeias, Vitória da Conquista - BA`);
              
-             const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
-             window.open(url, '_blank');
+             const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
+             window.open(calendarUrl, '_blank');
+
+             // 2. Guardar na pasta "eventos-agendados" do GitHub
+             if (!ghToken || !ghOwner || !ghRepo) {
+                 setError("⚠️ Calendário aberto, mas para aparecer no Painel de Eventos, configure o GitHub primeiro (botão da engrenagem).");
+                 setGhConfigOpen(true);
+                 setTimeout(() => setError(''), 5000);
+                 return;
+             }
+
+             const budgetData = {
+               clientName, clientPhone, guests, selectedDate, eventTime, includeServiceTax,
+               hasDecoration, decorationType, decorationLevel, ceremonyOnSite, churchDecoration,
+               hasBuffet, buffetFixedSelections, buffetVarSelections, hasCake,
+               hasBeverages, beverageSelection, drinkSelection,
+               hasServices, servicesSelections,
+               hasEntertainment, entertainmentSelections,
+               clientCPF, clientRG, clientAddress, hasDiscount, discountPercent,
+               payType, cashDate, dpValue, dpDate, dpMethod, dpInstallments, instCount, instValue, instFirstDate, instMethod
+             };
+             
+             const jsonString = JSON.stringify(budgetData, null, 2);
+             const base64Content = window.utf8_to_b64(jsonString); 
+             
+             const safeName = clientName ? clientName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-') : 'cliente';
+             const safePhone = clientPhone ? clientPhone.replace(/\D/g, '') : 'sem-numero';
+             const fileName = `agendado-${safeName}-${safePhone}.json`;
+             
+             const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/eventos-agendados/${fileName}`;
+             
+             try {
+                 let sha = null;
+                 const getResponse = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+                 if(getResponse.ok) {
+                     const getData = await getResponse.json();
+                     sha = getData.sha;
+                 }
+
+                 const bodyObj = {
+                     message: `Marcando evento na agenda: ${clientName || 'Cliente'}`,
+                     content: base64Content
+                 };
+                 if(sha) bodyObj.sha = sha;
+
+                 const putResponse = await fetch(url, {
+                     method: 'PUT',
+                     headers: {
+                         'Authorization': `token ${ghToken}`,
+                         'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify(bodyObj)
+                 });
+
+                 if(putResponse.ok) {
+                     setError("✅ Evento sincronizado com o Dashboard de Eventos!");
+                 } else {
+                     const erro = await putResponse.json();
+                     setError("Erro do GitHub ao agendar: " + erro.message);
+                 }
+             } catch (err) {
+                 setError("Erro ao sincronizar com o Dashboard de Eventos (verifique a ligação).");
+             } finally {
+                 setTimeout(() => setError(''), 4000);
+             }
           };
 
           const applyBudgetData = (data) => {
