@@ -1,0 +1,31 @@
+[
+  {
+    "id": "0fc4920f-8241-4cd8-bb4e-5e01be272765",
+    "name": "Marly",
+    "phone": "",
+    "pix": "",
+    "roles": [
+      "Copeiro",
+      "Cozinheiro",
+      "Faxina",
+      "Organização"
+    ],
+    "updatedAt": "2026-04-09T19:58:16.921Z"
+  },
+  {
+    "id": "12084075-8135-4b1d-85f9-969041aea5aa",
+    "name": "Marluce",
+    "phone": "",
+    "pix": "",
+    "roles": [
+      "Cerimonial",
+      "Copeiro",
+      "Cozinheiro",
+      "Faxina",
+      "Garçon",
+      "Organização",
+      "Segurança"
+    ],
+    "updatedAt": "2026-04-09T19:59:06.345Z"
+  }
+]
