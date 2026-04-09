@@ -1,0 +1,72 @@
+{
+  "clientName": "Maria Silva",
+  "clientPhone": "77988281234",
+  "guests": 50,
+  "selectedDate": "2026-04-18",
+  "eventTime": "14h às 21h",
+  "includeServiceTax": true,
+  "hasDecoration": true,
+  "decorationType": "Casamento",
+  "decorationLevel": "Completa",
+  "ceremonyOnSite": true,
+  "churchDecoration": "Não",
+  "hasBuffet": true,
+  "buffetFixedSelections": {
+    "self_service": true,
+    "degustacao_premium": true
+  },
+  "buffetVarSelections": {
+    "canapes": {
+      "selected": true,
+      "qty": 3
+    }
+  },
+  "hasCake": true,
+  "hasBeverages": true,
+  "beverageSelection": "com_alcool",
+  "drinkSelection": "drinks_premium",
+  "hasServices": true,
+  "servicesSelections": {
+    "seguranca": {
+      "selected": true,
+      "qty": 1
+    },
+    "copa": {
+      "selected": true,
+      "qty": 1
+    },
+    "garcons": {
+      "selected": true,
+      "qty": 1
+    },
+    "cozinha": {
+      "selected": true,
+      "qty": 1
+    },
+    "cerimonial": {
+      "selected": true,
+      "qty": 2
+    }
+  },
+  "hasEntertainment": true,
+  "entertainmentSelections": {
+    "son_standard": true,
+    "voz_violao": true,
+    "banda_inst": true
+  },
+  "clientCPF": "12345678900",
+  "clientRG": "",
+  "clientAddress": "Rua 1, casa 2",
+  "hasDiscount": true,
+  "discountPercent": 5,
+  "payType": "parcelado",
+  "cashDate": "",
+  "dpValue": "5000",
+  "dpDate": "2026-04-23",
+  "dpMethod": "Cartão Parcelado",
+  "dpInstallments": 2,
+  "instCount": "5",
+  "instValue": "2678.45",
+  "instFirstDate": "2026-04-18",
+  "instMethod": "PIX"
+}
