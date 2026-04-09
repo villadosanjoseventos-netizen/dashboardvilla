@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Eventos - Villa dos Anjos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .loader {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #d4af37;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .modal-scroll::-webkit-scrollbar { width: 6px; }
+        .modal-scroll::-webkit-scrollbar-track { background: #f4f4f5; border-radius: 8px; }
+        .modal-scroll::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        function App() {
+            const [isAuthenticated, setIsAuthenticated] = useState(true);
+            const [events, setEvents] = useState([]);
+            const [isLoading, setIsLoading] = useState(false);
+            const [error, setError] = useState('');
+            const [selectedEvent, setSelectedEvent] = useState(null); // Para o modal de "Mais Informações"
+
+            const fileInputRef = useRef(null);
+
+            // Autenticação básica
+            useEffect(() => {
+                if (localStorage.getItem('villa_dashboard_auth') !== 'true') {
+                    setIsAuthenticated(false);
+                    try {
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.warn("Ambiente bloqueou redirecionamento.");
+                    }
+                }
+            }, []);
+
+            // Carrega os eventos da nuvem (GitHub) - Nova pasta 'eventos-agendados'
+            const loadEventsFromCloud = async () => {
+                const token = localStorage.getItem('ghToken');
+                const owner = localStorage.getItem('ghOwner');
+                const repo = localStorage.getItem('ghRepo');
+
+                if (!token || !owner || !repo) {
+                    setError("Configuração do GitHub ausente. Por favor, acesse o módulo de Orçamentos e configure a Integração VIP primeiro.");
+                    return;
+                }
+
+                setIsLoading(true);
+                setError('');
+                try {
+                    // Atualizado para pescar as informações da nova pasta 'eventos-agendados'
+                    const url = `https://api.github.com/repos/${owner}/${repo}/contents/eventos-agendados`;
+                    const response = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+                    
+                    if (response.status === 404) {
+                        // Pasta ainda não existe (nenhum evento agendado ainda)
+                        setEvents([]);
+                        setIsLoading(false);
+                        return;
+                    }
+                    if (!response.ok) throw new Error("Erro ao buscar arquivos no GitHub.");
+
+                    const files = await response.json();
+                    const jsonFiles = files.filter(f => f.name.endsWith('.json'));
+
+                    // Busca todos os arquivos JSON em paralelo para ser rápido
+                    const filePromises = jsonFiles.map(file =>
+                        fetch(file.url, { headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3.raw' }})
+                        .then(res => res.json())
+                        .then(data => { data._fileName = file.name; return data; })
+                        .catch(err => null) // Ignora arquivos corrompidos
+                    );
+
+                    const loadedEvents = (await Promise.all(filePromises)).filter(e => e !== null && e.selectedDate);
+                    setEvents(loadedEvents);
+                } catch (err) {
+                    setError("Não foi possível carregar os eventos da nuvem. Verifique sua conexão e os dados do GitHub.");
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            // Carrega automaticamente ao entrar
+            useEffect(() => {
+                if (isAuthenticated) {
+                    loadEventsFromCloud();
+                }
+            }, [isAuthenticated]);
+
+            // Processamento local de arquivo (caso o usuário queira importar um .json baixado)
+            const handleLocalImport = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if(data.selectedDate) {
+                            data._fileName = file.name;
+                            // Adiciona aos eventos existentes (evitando duplicatas pelo nome, se possível)
+                            setEvents(prev => {
+                                const filtered = prev.filter(p => p._fileName !== data._fileName);
+                                return [...filtered, data];
+                            });
+                        }
+                    } catch (err) {
+                        alert("Arquivo JSON inválido.");
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = null;
+            };
+
+            // Helpers de formatação
+            const formatDateBR = (dateString) => {
+                if (!dateString) return '';
+                const [y, m, d] = dateString.split('-');
+                return `${d}/${m}/${y}`;
+            };
+
+            const getHighlightDate = (dateString) => {
+                if (!dateString) return { day: '00', month: '---' };
+                const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+                const [y, m, d] = dateString.split('-');
+                return { day: d, month: meses[parseInt(m) - 1], year: y };
+            };
+
+            const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
+
+            // Separação e Ordenação
+            const { upcoming, past } = useMemo(() => {
+                // Usa a data local no formato YYYY-MM-DD para comparar strings com segurança
+                const todayDate = new Date();
+                const yyyy = todayDate.getFullYear();
+                const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(todayDate.getDate()).padStart(2, '0');
+                const todayStr = `${yyyy}-${mm}-${dd}`;
+
+                const upcomingArr = [];
+                const pastArr = [];
+
+                events.forEach(ev => {
+                    if (ev.selectedDate >= todayStr) upcomingArr.push(ev);
+                    else pastArr.push(ev);
+                });
+
+                // Próximos: Ordem Crescente (mais perto de hoje primeiro)
+                upcomingArr.sort((a, b) => a.selectedDate.localeCompare(b.selectedDate));
+                // Passados: Ordem Decrescente (mais recentes primeiro)
+                pastArr.sort((a, b) => b.selectedDate.localeCompare(a.selectedDate));
+
+                return { upcoming: upcomingArr, past: pastArr };
+            }, [events]);
+
+            // Componente de Card
+            const EventCard = ({ event, isPast }) => {
+                const dateObj = getHighlightDate(event.selectedDate);
+                
+                return (
+                    <div className={`bg-white border rounded-2xl p-5 hover:shadow-lg transition-all group flex flex-col h-full ${isPast ? 'border-zinc-200 opacity-75 hover:opacity-100 grayscale hover:grayscale-0' : 'border-amber-200 shadow-sm hover:-translate-y-1'}`}>
+                        
+                        <div className="flex items-start gap-4 mb-4">
+                            {/* Data em Destaque */}
+                            <div className={`flex flex-col items-center justify-center rounded-xl p-2 min-w-[70px] border ${isPast ? 'bg-zinc-100 border-zinc-200 text-zinc-500' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
+                                <span className="text-xs font-bold uppercase tracking-widest">{dateObj.month}</span>
+                                <span className="text-2xl font-black leading-none my-1">{dateObj.day}</span>
+                                <span className="text-[10px] font-bold">{dateObj.year}</span>
+                            </div>
+                            
+                            <div className="flex-1">
+                                <h3 className="text-lg font-bold text-zinc-900 leading-tight mb-1 line-clamp-1" title={event.clientName}>
+                                    {event.clientName || 'Cliente Indefinido'}
+                                </h3>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${isPast ? 'bg-zinc-200 text-zinc-600' : 'bg-amber-100 text-amber-800'}`}>
+                                        {event.decorationType || 'Evento'}
+                                    </span>
+                                    {event.ceremonyOnSite && (
+                                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-100">
+                                            Cerimônia no Local
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2 mb-6 flex-1">
+                            <div className="flex items-center gap-3 text-sm text-zinc-600">
+                                <div className="w-6 flex justify-center"><i className="fa-regular fa-clock text-amber-500"></i></div>
+                                <span className="font-medium">{event.eventTime || 'Horário a definir'}</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-zinc-600">
+                                <div className="w-6 flex justify-center"><i className="fa-solid fa-users text-amber-500"></i></div>
+                                <span className="font-medium">{event.guests || 0} Convidados</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-sm text-zinc-600">
+                                <div className="w-6 flex justify-center"><i className="fa-brands fa-whatsapp text-green-500"></i></div>
+                                <span className="font-medium">{event.clientPhone || 'Não informado'}</span>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={() => setSelectedEvent(event)}
+                            className={`w-full py-3 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${isPast ? 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200' : 'bg-zinc-900 text-white hover:bg-black'}`}
+                        >
+                            <i className="fa-solid fa-circle-info"></i> Mais Informações
+                        </button>
+                    </div>
+                );
+            };
+
+            if (!isAuthenticated) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-4">
+                        <div className="bg-white rounded-3xl p-8 shadow-xl border border-zinc-200 text-center max-w-sm w-full">
+                            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-red-200 mx-auto mb-6">
+                                <i className="fa-solid fa-lock"></i>
+                            </div>
+                            <h2 className="text-2xl font-bold text-zinc-900 mb-2">Acesso Restrito</h2>
+                            <p className="text-zinc-500 text-sm mb-6">Faça o login no painel principal para acessar a Agenda.</p>
+                            <a href="index.html" className="inline-block w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-all shadow-md">Ir para o Login</a>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen flex flex-col relative">
+                    
+                    {/* Cabeçalho */}
+                    <header className="bg-white border-b border-zinc-200 sticky top-0 z-20">
+                        <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <a href="index.html" className="w-10 h-10 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-xl flex items-center justify-center transition-colors">
+                                    <i className="fa-solid fa-arrow-left"></i>
+                                </a>
+                                <div>
+                                    <h1 className="text-xl md:text-2xl font-bold text-zinc-900">Agenda de Eventos</h1>
+                                    <p className="text-xs md:text-sm text-zinc-500 font-medium">Cronograma e Dossiês Agendados</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => fileInputRef.current.click()} className="hidden md:flex items-center gap-2 text-zinc-600 hover:text-zinc-900 font-bold text-sm px-3 py-2 rounded-lg transition-colors">
+                                    <i className="fa-solid fa-upload"></i> Carregar Local
+                                </button>
+                                <input type="file" accept=".json" ref={fileInputRef} onChange={handleLocalImport} className="hidden" />
+                                
+                                <button onClick={loadEventsFromCloud} disabled={isLoading} className="flex items-center gap-2 text-amber-600 bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg font-bold border border-amber-200 transition-colors">
+                                    {isLoading ? <span className="loader border-amber-600 border-t-transparent w-4 h-4"></span> : <i className="fa-solid fa-arrows-rotate"></i>} 
+                                    <span className="hidden sm:inline">Sincronizar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-8 space-y-12">
+                        
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl flex items-center gap-3">
+                                <i className="fa-solid fa-circle-exclamation text-xl"></i>
+                                <p className="font-medium text-sm">{error}</p>
+                            </div>
+                        )}
+
+                        {/* SEÇÃO: PRÓXIMOS EVENTOS */}
+                        <section>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+                                    <i className="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <h2 className="text-2xl font-bold text-zinc-800">Próximos Eventos <span className="text-zinc-400 text-lg font-normal ml-2">({upcoming.length})</span></h2>
+                            </div>
+
+                            {isLoading && events.length === 0 ? (
+                                <div className="text-center py-20">
+                                    <span className="loader border-zinc-300 border-t-amber-500 w-12 h-12 border-4 mb-4"></span>
+                                    <p className="text-zinc-500 font-medium">Acessando a nuvem...</p>
+                                </div>
+                            ) : upcoming.length === 0 ? (
+                                <div className="text-center py-16 bg-white rounded-2xl border border-zinc-200 border-dashed">
+                                    <i className="fa-regular fa-calendar-xmark text-4xl text-zinc-300 mb-4"></i>
+                                    <h3 className="text-lg font-bold text-zinc-700">Agenda Livre</h3>
+                                    <p className="text-zinc-500 text-sm mt-1">Nenhum evento agendado encontrado na pasta 'eventos-agendados'.</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {upcoming.map(ev => <EventCard key={ev._fileName} event={ev} isPast={false} />)}
+                                </div>
+                            )}
+                        </section>
+
+                        {/* SEÇÃO: EVENTOS REALIZADOS */}
+                        {past.length > 0 && (
+                            <section className="pt-8 border-t border-zinc-200">
+                                <div className="flex items-center gap-3 mb-6 opacity-75">
+                                    <div className="w-10 h-10 rounded-full bg-zinc-200 text-zinc-600 flex items-center justify-center text-lg">
+                                        <i className="fa-solid fa-clock-rotate-left"></i>
+                                    </div>
+                                    <h2 className="text-xl font-bold text-zinc-600">Eventos Realizados <span className="font-normal">({past.length})</span></h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    {past.map(ev => <EventCard key={ev._fileName} event={ev} isPast={true} />)}
+                                </div>
+                            </section>
+                        )}
+                    </main>
+
+                    {/* MODAL DE MAIS INFORMAÇÕES */}
+                    {selectedEvent && (
+                        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                            <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden">
+                                
+                                {/* Modal Header */}
+                                <div className="bg-zinc-900 text-white p-6 md:p-8 flex justify-between items-start shrink-0 relative overflow-hidden">
+                                    <div className="absolute -right-10 -top-10 opacity-10 text-9xl text-amber-500">
+                                        <i className="fa-solid fa-champagne-glasses"></i>
+                                    </div>
+                                    <div className="relative z-10">
+                                        <div className="flex gap-2 items-center mb-3">
+                                            <span className="bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md">
+                                                {selectedEvent.decorationType || 'Evento'}
+                                            </span>
+                                            <span className="text-zinc-400 text-sm font-medium">
+                                                <i className="fa-regular fa-calendar mr-1"></i> {formatDateBR(selectedEvent.selectedDate)}
+                                            </span>
+                                        </div>
+                                        <h2 className="text-3xl font-bold font-serif leading-tight">{selectedEvent.clientName}</h2>
+                                    </div>
+                                    <button onClick={() => setSelectedEvent(null)} className="relative z-10 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                                        <i className="fa-solid fa-xmark text-xl"></i>
+                                    </button>
+                                </div>
+
+                                {/* Modal Body */}
+                                <div className="flex-1 overflow-y-auto p-6 md:p-8 modal-scroll bg-zinc-50 space-y-8">
+                                    
+                                    {/* Resumo Base */}
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div className="bg-white p-4 rounded-2xl border border-zinc-200 text-center">
+                                            <i className="fa-regular fa-clock text-amber-500 text-xl mb-2"></i>
+                                            <p className="text-xs text-zinc-500 font-bold uppercase">Horário</p>
+                                            <p className="font-bold text-zinc-900">{selectedEvent.eventTime}</p>
+                                        </div>
+                                        <div className="bg-white p-4 rounded-2xl border border-zinc-200 text-center">
+                                            <i className="fa-solid fa-users text-amber-500 text-xl mb-2"></i>
+                                            <p className="text-xs text-zinc-500 font-bold uppercase">Convidados</p>
+                                            <p className="font-bold text-zinc-900">{selectedEvent.guests}</p>
+                                        </div>
+                                        <div className="bg-white p-4 rounded-2xl border border-zinc-200 text-center">
+                                            <i className="fa-brands fa-whatsapp text-amber-500 text-xl mb-2"></i>
+                                            <p className="text-xs text-zinc-500 font-bold uppercase">Contato</p>
+                                            <p className="font-bold text-zinc-900 text-sm">{selectedEvent.clientPhone || '-'}</p>
+                                        </div>
+                                        <div className="bg-white p-4 rounded-2xl border border-zinc-200 text-center">
+                                            <i className="fa-solid fa-map-location-dot text-amber-500 text-xl mb-2"></i>
+                                            <p className="text-xs text-zinc-500 font-bold uppercase">Cerimônia</p>
+                                            <p className="font-bold text-zinc-900">{selectedEvent.ceremonyOnSite ? 'No Local' : 'Externa'}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Checklist de Serviços Contratados */}
+                                    <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden">
+                                        <h3 className="bg-zinc-100 p-4 font-bold text-zinc-800 border-b border-zinc-200 flex items-center gap-2">
+                                            <i className="fa-solid fa-list-check text-amber-500"></i> Serviços Contratados
+                                        </h3>
+                                        <div className="p-4 space-y-4">
+                                            
+                                            {/* Decoração */}
+                                            <div>
+                                                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Decoração</p>
+                                                <p className="text-sm font-medium text-zinc-700">
+                                                    {selectedEvent.hasDecoration ? `Incluída (Padrão: ${selectedEvent.decorationLevel})` : 'Sem decoração contratada.'}
+                                                </p>
+                                                {selectedEvent.churchDecoration && selectedEvent.churchDecoration !== 'Não' && (
+                                                    <p className="text-sm text-zinc-600 mt-1"><i className="fa-solid fa-church text-zinc-400 w-4"></i> Igreja: {selectedEvent.churchDecoration}</p>
+                                                )}
+                                            </div>
+                                            
+                                            <div className="border-t border-zinc-100"></div>
+
+                                            {/* Buffet & Bebidas */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Alimentação</p>
+                                                    <p className="text-sm font-medium text-zinc-700">
+                                                        {selectedEvent.hasBuffet ? 'Buffet Completo Contratado' : 'Sem buffet da Villa'}
+                                                    </p>
+                                                    {selectedEvent.hasCake && <p className="text-sm text-zinc-600 mt-1"><i className="fa-solid fa-cake-candles text-amber-400 w-4"></i> Bolo Villa dos Anjos</p>}
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Bebidas & Bar</p>
+                                                    <p className="text-sm font-medium text-zinc-700">
+                                                        {selectedEvent.hasBeverages ? 'Pacote de Bebidas Contratado' : 'Bebidas por conta do cliente'}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="border-t border-zinc-100"></div>
+
+                                            {/* Extras */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Equipe Extra</p>
+                                                    <p className="text-sm font-medium text-zinc-700">
+                                                        {selectedEvent.hasServices ? 'Profissionais adicionais solicitados' : 'Apenas equipe padrão da locação'}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Entretenimento</p>
+                                                    <p className="text-sm font-medium text-zinc-700">
+                                                        {selectedEvent.hasEntertainment ? 'Atrações/Som contratados' : 'Som ambiente básico'}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    {/* Resumo Financeiro Simples */}
+                                    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                                        <div>
+                                            <h3 className="font-bold text-amber-900 mb-1">Status de Pagamento</h3>
+                                            <p className="text-sm text-amber-700">
+                                                Forma escolhida: <strong>{selectedEvent.payType === 'avista' ? 'À Vista' : 'Parcelado'}</strong>
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            {selectedEvent.payType === 'parcelado' && selectedEvent.dpValue && (
+                                                <p className="text-xs font-bold text-amber-600 uppercase">Entrada: {formatCurrency(selectedEvent.dpValue)}</p>
+                                            )}
+                                            {selectedEvent.payType === 'parcelado' && selectedEvent.instValue && (
+                                                <p className="text-xs font-bold text-amber-600 uppercase mb-1">Parcelas: {selectedEvent.instCount}x de {formatCurrency(selectedEvent.instValue)}</p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
