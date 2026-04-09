@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Equipe - Villa dos Anjos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-zinc-50 font-sans text-zinc-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // Lista completa de funções solicitadas
+        const AVAILABLE_ROLES = [
+            'Garçon', 'Bartender', 'Copeiro', 'Cozinheiro', 'Segurança', 'Faxina', 'Metre', 
+            'Cerimonial', 'Mestre de Cerimônia', 'Operador de Som', 'Ajudante', 'DJ', 'Banda', 
+            'Voz e Violão', 'Instrumental', 'Decorador', 'Doceira', 'Boleira', 'Confeiteira', 
+            'Salgadeira', 'Acarajé', 'Churrasqueiro', 'Organização', 'Fotógrafo', 'Videomaker', 
+            'Gráfica', 'Brindes', 'Gelo', 'Frutas'
+        ].sort(); // Organizado em ordem alfabética para facilitar
+
+        function App() {
+            const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+            // Autenticação básica (verifica se logou no index.html)
+            useEffect(() => {
+                if (localStorage.getItem('villa_dashboard_auth') !== 'true') {
+                    setIsAuthenticated(false);
+                    try {
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.warn("Ambiente de visualização bloqueou o redirecionamento automático.", error);
+                    }
+                }
+            }, []);
+
+            // Estado principal: Lista de Membros
+            const [members, setMembers] = useState(() => {
+                const saved = localStorage.getItem('villa_equipe_members');
+                return saved ? JSON.parse(saved) : [];
+            });
+
+            // Estados do Formulário
+            const [editingId, setEditingId] = useState(null);
+            const [name, setName] = useState('');
+            const [phone, setPhone] = useState('');
+            const [pix, setPix] = useState('');
+            const [selectedRoles, setSelectedRoles] = useState([]);
+            
+            // Estado de Busca/Filtro
+            const [searchTerm, setSearchTerm] = useState('');
+
+            // Salva no localStorage sempre que a lista de membros mudar
+            useEffect(() => {
+                localStorage.setItem('villa_equipe_members', JSON.stringify(members));
+            }, [members]);
+
+            // Funções de manipulação do formulário
+            const toggleRole = (role) => {
+                setSelectedRoles(prev => 
+                    prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
+                );
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!name.trim() || selectedRoles.length === 0) {
+                    alert("Nome e pelo menos uma função são obrigatórios!");
+                    return;
+                }
+
+                const newMember = {
+                    id: editingId || crypto.randomUUID(),
+                    name,
+                    phone,
+                    pix,
+                    roles: selectedRoles,
+                    updatedAt: new Date().toISOString()
+                };
+
+                if (editingId) {
+                    setMembers(members.map(m => m.id === editingId ? newMember : m));
+                } else {
+                    setMembers([...members, newMember]);
+                }
+
+                resetForm();
+            };
+
+            const handleEdit = (member) => {
+                setEditingId(member.id);
+                setName(member.name);
+                setPhone(member.phone);
+                setPix(member.pix);
+                setSelectedRoles(member.roles);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const handleDelete = (id) => {
+                if (window.confirm("Tem certeza que deseja excluir este profissional da equipe?")) {
+                    setMembers(members.filter(m => m.id !== id));
+                    if (editingId === id) resetForm();
+                }
+            };
+
+            const resetForm = () => {
+                setEditingId(null);
+                setName('');
+                setPhone('');
+                setPix('');
+                setSelectedRoles([]);
+            };
+
+            // Filtragem da lista
+            const filteredMembers = useMemo(() => {
+                return members.filter(m => {
+                    const searchLower = searchTerm.toLowerCase();
+                    return m.name.toLowerCase().includes(searchLower) || 
+                           m.roles.some(r => r.toLowerCase().includes(searchLower)) ||
+                           m.phone.includes(searchTerm);
+                });
+            }, [members, searchTerm]);
+
+            // Se não estiver autenticado, exibe uma tela de bloqueio com link manual
+            if (!isAuthenticated) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-zinc-50 p-4">
+                        <div className="bg-white rounded-3xl p-8 shadow-xl border border-zinc-200 text-center max-w-sm w-full">
+                            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-red-200 mx-auto mb-6">
+                                <i className="fa-solid fa-lock"></i>
+                            </div>
+                            <h2 className="text-2xl font-bold text-zinc-900 mb-2">Acesso Restrito</h2>
+                            <p className="text-zinc-500 text-sm mb-6">Você precisa estar logado no painel principal para acessar a Gestão de Equipe.</p>
+                            <a href="index.html" className="inline-block w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+                                Ir para o Login
+                            </a>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Cabeçalho */}
+                    <header className="bg-white border-b border-zinc-200 sticky top-0 z-30">
+                        <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <a href="index.html" className="w-10 h-10 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-xl flex items-center justify-center transition-colors">
+                                    <i className="fa-solid fa-arrow-left"></i>
+                                </a>
+                                <div>
+                                    <h1 className="text-xl md:text-2xl font-bold text-zinc-900">Gestão de Equipe</h1>
+                                    <p className="text-xs md:text-sm text-zinc-500 font-medium">Villa dos Anjos</p>
+                                </div>
+                            </div>
+                            <div className="hidden md:flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded-lg font-bold border border-amber-200">
+                                <i className="fa-solid fa-users"></i> {members.length} Profissionais
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        
+                        {/* COLUNA ESQUERDA - FORMULÁRIO */}
+                        <div className="lg:col-span-4 lg:sticky lg:top-28 h-fit space-y-6">
+                            <div className="bg-white rounded-2xl shadow-sm border border-zinc-200 p-6">
+                                <h2 className="text-lg font-bold text-zinc-800 mb-4 flex items-center gap-2 border-b border-zinc-100 pb-3">
+                                    <i className={`fa-solid ${editingId ? 'fa-pen-to-square text-blue-500' : 'fa-user-plus text-amber-500'}`}></i> 
+                                    {editingId ? 'Editar Profissional' : 'Novo Profissional'}
+                                </h2>
+                                
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Nome Completo *</label>
+                                        <input type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="Ex: João da Silva" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500" />
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Telefone</label>
+                                            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(00) 00000-0000" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-zinc-500 mb-1 uppercase tracking-wider">Chave PIX</label>
+                                            <input type="text" value={pix} onChange={e => setPix(e.target.value)} placeholder="Celular, CPF ou E-mail" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-zinc-500 mb-2 uppercase tracking-wider">Funções Atribuídas *</label>
+                                        <div className="h-64 overflow-y-auto pr-2 custom-scrollbar bg-zinc-50 border border-zinc-200 rounded-xl p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 content-start">
+                                            {AVAILABLE_ROLES.map(role => (
+                                                <label key={role} className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors border ${selectedRoles.includes(role) ? 'bg-amber-100/50 border-amber-300 text-amber-900' : 'bg-white border-zinc-200 hover:bg-zinc-100'}`}>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        checked={selectedRoles.includes(role)} 
+                                                        onChange={() => toggleRole(role)}
+                                                        className="w-4 h-4 accent-amber-500 rounded"
+                                                    />
+                                                    <span className="text-sm font-medium">{role}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                        <p className="text-[10px] text-zinc-400 mt-1">Selecione uma ou mais funções.</p>
+                                    </div>
+
+                                    <div className="pt-4 flex gap-3">
+                                        {editingId && (
+                                            <button type="button" onClick={resetForm} className="flex-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold py-3 rounded-xl transition-colors text-sm">
+                                                Cancelar
+                                            </button>
+                                        )}
+                                        <button type="submit" className={`flex-[2] text-white font-bold py-3 rounded-xl transition-all text-sm shadow-md ${editingId ? 'bg-blue-600 hover:bg-blue-700' : 'bg-amber-500 hover:bg-amber-600'}`}>
+                                            {editingId ? 'Salvar Alterações' : 'Cadastrar Membro'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        {/* COLUNA DIREITA - LISTA DE EQUIPE */}
+                        <div className="lg:col-span-8 space-y-6">
+                            
+                            {/* Barra de Busca */}
+                            <div className="bg-white rounded-2xl shadow-sm border border-zinc-200 p-4 flex flex-col md:flex-row items-center gap-4">
+                                <div className="relative w-full">
+                                    <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Buscar por nome, função ou telefone..." 
+                                        value={searchTerm}
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-500"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Grid de Membros */}
+                            {filteredMembers.length === 0 ? (
+                                <div className="text-center py-16 bg-white rounded-2xl border border-zinc-200 border-dashed">
+                                    <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i className="fa-solid fa-user-slash text-3xl text-zinc-300"></i>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-zinc-700 mb-1">Nenhum profissional encontrado</h3>
+                                    <p className="text-zinc-500 text-sm">Cadastre novos membros usando o formulário ao lado.</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {filteredMembers.map(member => (
+                                        <div key={member.id} className="bg-white border border-zinc-200 rounded-2xl p-5 hover:border-amber-300 hover:shadow-md transition-all group flex flex-col h-full">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center text-lg font-bold">
+                                                        {member.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-bold text-zinc-900 leading-tight">{member.name}</h3>
+                                                        <p className="text-xs text-zinc-500">Adicionado recentemente</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button onClick={() => handleEdit(member)} className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition-colors" title="Editar">
+                                                        <i className="fa-solid fa-pen text-xs"></i>
+                                                    </button>
+                                                    <button onClick={() => handleDelete(member.id)} className="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition-colors" title="Excluir">
+                                                        <i className="fa-solid fa-trash text-xs"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="space-y-2 mb-4 flex-1">
+                                                <div className="flex items-center gap-2 text-sm text-zinc-600">
+                                                    <i className="fa-solid fa-phone text-zinc-400 w-4 text-center"></i> 
+                                                    {member.phone || <span className="text-zinc-400 italic">Não informado</span>}
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm text-zinc-600">
+                                                    <i className="fa-brands fa-pix text-teal-500 w-4 text-center"></i> 
+                                                    {member.pix ? <span className="font-medium text-zinc-800">{member.pix}</span> : <span className="text-zinc-400 italic">Não informado</span>}
+                                                </div>
+                                            </div>
+
+                                            <div className="pt-4 border-t border-zinc-100">
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {member.roles.map(role => (
+                                                        <span key={role} className="bg-zinc-100 text-zinc-700 border border-zinc-200 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
+                                                            {role}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    
+    <style>
+        /* Personalização da barra de rolagem do box de funções */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f4f4f5; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d4d4d8; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa; 
+        }
+    </style>
+</body>
+</html>
