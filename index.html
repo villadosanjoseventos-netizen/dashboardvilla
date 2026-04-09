@@ -524,6 +524,12 @@
           const [hasDiscount, setHasDiscount] = useState(false);
           const [discountPercent, setDiscountPercent] = useState(5);
 
+          // Estados Importação/Exportação GitHub
+          const [isSaving, setIsSaving] = useState(false);
+          const [showImportModal, setShowImportModal] = useState(false);
+          const [githubFiles, setGithubFiles] = useState([]);
+          const [isLoadingFiles, setIsLoadingFiles] = useState(false);
+
           // Pagamento Estruturado
           const [payType, setPayType] = useState('parcelado'); 
           const [cashDate, setCashDate] = useState('');
@@ -855,6 +861,9 @@
     d) FORMA DE PAGAMENTO DAS PARCELAS: ${instMethod}.`;
              }
 
+             // DATA DINÂMICA BASEADA NA INSTRUÇÃO DO USUÁRIO
+             const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
              const text = `CONTRATO DE LOCAÇÃO DE IMÓVEL E PRESTAÇÃO DE SERVIÇOS PARA EVENTOS
 
 IDENTIFICAÇÃO DAS PARTES
@@ -918,7 +927,7 @@ CLÁUSULA OITAVA – DISPOSIÇÕES FINAIS E FORO
 
 E, por estarem plenamente de acordo, justos e contratados, assinam o presente contrato em 02 (duas) vias de igual teor e forma, para que produza seus regulares efeitos de direito.
 
-Vitória da Conquista - BA, 09 de abril de 2026.
+Vitória da Conquista - BA, ${dataAtualExtenso}.
 
 
 _____________________________________________________
@@ -1011,59 +1020,63 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
              window.open(url, '_blank');
           };
 
+          const applyBudgetData = (data) => {
+              if(data.clientName !== undefined) setClientName(data.clientName);
+              if(data.clientPhone !== undefined) setClientPhone(data.clientPhone);
+              if(data.guests !== undefined) setGuests(data.guests);
+              if(data.selectedDate !== undefined) setSelectedDate(data.selectedDate);
+              if(data.eventTime !== undefined) setEventTime(data.eventTime); 
+              if(data.includeServiceTax !== undefined) setIncludeServiceTax(data.includeServiceTax);
+              
+              if(data.hasDecoration !== undefined) setHasDecoration(data.hasDecoration);
+              if(data.decorationType !== undefined) setDecorationType(data.decorationType);
+              if(data.decorationLevel !== undefined) setDecorationLevel(data.decorationLevel);
+              if(data.ceremonyOnSite !== undefined) setCeremonyOnSite(data.ceremonyOnSite);
+              if(data.churchDecoration !== undefined) setChurchDecoration(data.churchDecoration);
+              
+              if(data.hasBuffet !== undefined) setHasBuffet(data.hasBuffet);
+              if(data.buffetFixedSelections !== undefined) setBuffetFixedSelections(data.buffetFixedSelections);
+              if(data.buffetVarSelections !== undefined) setBuffetVarSelections(data.buffetVarSelections);
+              if(data.hasCake !== undefined) setHasCake(data.hasCake);
+              
+              if(data.hasBeverages !== undefined) setHasBeverages(data.hasBeverages);
+              if(data.beverageSelection !== undefined) setBeverageSelection(data.beverageSelection);
+              if(data.drinkSelection !== undefined) setDrinkSelection(data.drinkSelection);
+              
+              if(data.hasServices !== undefined) setHasServices(data.hasServices);
+              if(data.servicesSelections !== undefined) setServicesSelections(data.servicesSelections);
+              
+              if(data.hasEntertainment !== undefined) setHasEntertainment(data.hasEntertainment);
+              if(data.entertainmentSelections !== undefined) setEntertainmentSelections(data.entertainmentSelections);
+              
+              if(data.clientCPF !== undefined) setClientCPF(data.clientCPF);
+              if(data.clientRG !== undefined) setClientRG(data.clientRG);
+              if(data.clientAddress !== undefined) setClientAddress(data.clientAddress);
+              if(data.hasDiscount !== undefined) setHasDiscount(data.hasDiscount);
+              if(data.discountPercent !== undefined) setDiscountPercent(data.discountPercent);
+
+              if(data.payType !== undefined) setPayType(data.payType);
+              if(data.cashDate !== undefined) setCashDate(data.cashDate);
+              if(data.dpValue !== undefined) setDpValue(data.dpValue);
+              if(data.dpDate !== undefined) setDpDate(data.dpDate);
+              if(data.dpMethod !== undefined) setDpMethod(data.dpMethod);
+              if(data.dpInstallments !== undefined) setDpInstallments(data.dpInstallments);
+              if(data.instCount !== undefined) setInstCount(data.instCount);
+              if(data.instValue !== undefined) setInstValue(data.instValue);
+              if(data.instFirstDate !== undefined) setInstFirstDate(data.instFirstDate);
+              else if (data.instDate !== undefined) setInstFirstDate(data.instDate);
+              if(data.instMethod !== undefined) setInstMethod(data.instMethod);
+
+              setError("✅ Orçamento carregado com sucesso!");
+              setTimeout(() => setError(''), 3000);
+          };
+
           const processFile = (file) => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(data.clientName !== undefined) setClientName(data.clientName);
-                    if(data.clientPhone !== undefined) setClientPhone(data.clientPhone);
-                    if(data.guests !== undefined) setGuests(data.guests);
-                    if(data.selectedDate !== undefined) setSelectedDate(data.selectedDate);
-                    if(data.eventTime !== undefined) setEventTime(data.eventTime); 
-                    if(data.includeServiceTax !== undefined) setIncludeServiceTax(data.includeServiceTax);
-                    
-                    if(data.hasDecoration !== undefined) setHasDecoration(data.hasDecoration);
-                    if(data.decorationType !== undefined) setDecorationType(data.decorationType);
-                    if(data.decorationLevel !== undefined) setDecorationLevel(data.decorationLevel);
-                    if(data.ceremonyOnSite !== undefined) setCeremonyOnSite(data.ceremonyOnSite);
-                    if(data.churchDecoration !== undefined) setChurchDecoration(data.churchDecoration);
-                    
-                    if(data.hasBuffet !== undefined) setHasBuffet(data.hasBuffet);
-                    if(data.buffetFixedSelections !== undefined) setBuffetFixedSelections(data.buffetFixedSelections);
-                    if(data.buffetVarSelections !== undefined) setBuffetVarSelections(data.buffetVarSelections);
-                    if(data.hasCake !== undefined) setHasCake(data.hasCake);
-                    
-                    if(data.hasBeverages !== undefined) setHasBeverages(data.hasBeverages);
-                    if(data.beverageSelection !== undefined) setBeverageSelection(data.beverageSelection);
-                    if(data.drinkSelection !== undefined) setDrinkSelection(data.drinkSelection);
-                    
-                    if(data.hasServices !== undefined) setHasServices(data.hasServices);
-                    if(data.servicesSelections !== undefined) setServicesSelections(data.servicesSelections);
-                    
-                    if(data.hasEntertainment !== undefined) setHasEntertainment(data.hasEntertainment);
-                    if(data.entertainmentSelections !== undefined) setEntertainmentSelections(data.entertainmentSelections);
-                    
-                    if(data.clientCPF !== undefined) setClientCPF(data.clientCPF);
-                    if(data.clientRG !== undefined) setClientRG(data.clientRG);
-                    if(data.clientAddress !== undefined) setClientAddress(data.clientAddress);
-                    if(data.hasDiscount !== undefined) setHasDiscount(data.hasDiscount);
-                    if(data.discountPercent !== undefined) setDiscountPercent(data.discountPercent);
-
-                    if(data.payType !== undefined) setPayType(data.payType);
-                    if(data.cashDate !== undefined) setCashDate(data.cashDate);
-                    if(data.dpValue !== undefined) setDpValue(data.dpValue);
-                    if(data.dpDate !== undefined) setDpDate(data.dpDate);
-                    if(data.dpMethod !== undefined) setDpMethod(data.dpMethod);
-                    if(data.dpInstallments !== undefined) setDpInstallments(data.dpInstallments);
-                    if(data.instCount !== undefined) setInstCount(data.instCount);
-                    if(data.instValue !== undefined) setInstValue(data.instValue);
-                    if(data.instFirstDate !== undefined) setInstFirstDate(data.instFirstDate);
-                    else if (data.instDate !== undefined) setInstFirstDate(data.instDate); // compatibilidade anterior
-                    if(data.instMethod !== undefined) setInstMethod(data.instMethod);
-
-                    setError("✅ Orçamento carregado com sucesso!");
-                    setTimeout(() => setError(''), 3000);
+                    applyBudgetData(data);
                 } catch (err) {
                     setError("Erro ao ler o arquivo. Certifique-se de que é um arquivo JSON válido.");
                     setTimeout(() => setError(''), 4000);
@@ -1072,7 +1085,14 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
             reader.readAsText(file);
           };
 
-          const handleSaveBudget = async () => {
+          const handleFileUpload = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            processFile(file);
+            event.target.value = null; 
+          };
+
+          const handleSaveLocal = async () => {
             const budgetData = {
               clientName, clientPhone, guests, selectedDate, eventTime, includeServiceTax,
               hasDecoration, decorationType, decorationLevel, ceremonyOnSite, churchDecoration,
@@ -1099,7 +1119,7 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
                 await writable.write(jsonString);
                 await writable.close();
                 
-                setError("✅ Orçamento salvo com sucesso na sua pasta!");
+                setError("✅ Orçamento salvo com sucesso na sua máquina!");
                 setTimeout(() => setError(''), 3000);
               } else {
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
@@ -1109,16 +1129,18 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
                 document.body.appendChild(downloadAnchorNode);
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
+                setError("✅ Orçamento baixado com sucesso!");
+                setTimeout(() => setError(''), 3000);
               }
             } catch (err) {
               if (err.name !== 'AbortError') {
-                setError("Erro ao salvar o arquivo.");
+                setError("Erro ao salvar o arquivo localmente.");
                 setTimeout(() => setError(''), 3000);
               }
             }
           };
 
-          const handleImportClick = async () => {
+          const handleImportLocalClick = async () => {
             try {
               if ('showOpenFilePicker' in window) {
                 const [fileHandle] = await window.showOpenFilePicker({
@@ -1138,11 +1160,130 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
             }
           };
 
-          const handleFileUpload = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            processFile(file);
-            event.target.value = null; 
+          const handleSaveBudget = async () => {
+            if (!ghToken || !ghOwner || !ghRepo) {
+                setError("Configuração Pendente: Preencha o Token, Usuário e Repositório do GitHub.");
+                setGhConfigOpen(true);
+                setTimeout(() => setError(''), 4000);
+                return;
+            }
+
+            const budgetData = {
+              clientName, clientPhone, guests, selectedDate, eventTime, includeServiceTax,
+              hasDecoration, decorationType, decorationLevel, ceremonyOnSite, churchDecoration,
+              hasBuffet, buffetFixedSelections, buffetVarSelections, hasCake,
+              hasBeverages, beverageSelection, drinkSelection,
+              hasServices, servicesSelections,
+              hasEntertainment, entertainmentSelections,
+              clientCPF, clientRG, clientAddress, hasDiscount, discountPercent,
+              payType, cashDate, dpValue, dpDate, dpMethod, dpInstallments, instCount, instValue, instFirstDate, instMethod
+            };
+            
+            const jsonString = JSON.stringify(budgetData, null, 2);
+            const base64Content = window.utf8_to_b64(jsonString); // Usa a função global existente
+            
+            const safeName = clientName ? clientName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-') : 'cliente';
+            const safePhone = clientPhone ? clientPhone.replace(/\D/g, '') : 'sem-numero';
+            const fileName = `orcamento-${safeName}-${safePhone}.json`;
+            const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/orcamentos/${fileName}`;
+            
+            setIsSaving(true);
+            try {
+                // Tenta buscar o arquivo primeiro para pegar o SHA (caso esteja atualizando um existente)
+                let sha = null;
+                const getResponse = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+                if(getResponse.ok) {
+                    const getData = await getResponse.json();
+                    sha = getData.sha;
+                }
+
+                const bodyObj = {
+                    message: `Salvando orçamento: ${clientName || 'Cliente'}`,
+                    content: base64Content
+                };
+                if(sha) bodyObj.sha = sha;
+
+                const putResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${ghToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bodyObj)
+                });
+
+                if(putResponse.ok) {
+                    setError("✅ Orçamento salvo com sucesso no GitHub!");
+                } else {
+                    const erro = await putResponse.json();
+                    setError("Erro do GitHub: " + erro.message);
+                }
+            } catch (err) {
+                setError("Erro ao salvar no GitHub. Verifique a conexão.");
+            } finally {
+                setIsSaving(false);
+                setTimeout(() => setError(''), 4000);
+            }
+          };
+
+          const handleImportClick = async () => {
+            if (!ghToken || !ghOwner || !ghRepo) {
+                setError("Configuração Pendente: Preencha o Token, Usuário e Repositório do GitHub.");
+                setGhConfigOpen(true);
+                setTimeout(() => setError(''), 4000);
+                return;
+            }
+            
+            setShowImportModal(true);
+            setIsLoadingFiles(true);
+            setGithubFiles([]);
+            
+            const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/orcamentos`;
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+                if(response.ok) {
+                    const data = await response.json();
+                    const jsonFiles = data.filter(f => f.name.endsWith('.json'));
+                    setGithubFiles(jsonFiles);
+                } else if (response.status === 404) {
+                    // Pasta ainda não existe no repositório
+                    setGithubFiles([]);
+                } else {
+                    const erro = await response.json();
+                    setError("Erro ao buscar arquivos: " + erro.message);
+                    setTimeout(() => setError(''), 4000);
+                }
+            } catch (err) {
+                setError("Falha na conexão ao buscar arquivos.");
+                setTimeout(() => setError(''), 4000);
+            } finally {
+                setIsLoadingFiles(false);
+            }
+          };
+
+          const loadBudgetFromGithub = async (fileUrl) => {
+              setIsLoadingFiles(true);
+              try {
+                  const response = await fetch(fileUrl, { 
+                      headers: { 
+                          'Authorization': `token ${ghToken}`, 
+                          'Accept': 'application/vnd.github.v3.raw' 
+                      } 
+                  });
+                  if (response.ok) {
+                      const data = await response.json();
+                      applyBudgetData(data);
+                      setShowImportModal(false);
+                  } else {
+                      setError("Erro ao baixar o orçamento do repositório.");
+                      setTimeout(() => setError(''), 4000);
+                  }
+              } catch (err) {
+                  setError("Falha ao carregar o arquivo.");
+                  setTimeout(() => setError(''), 4000);
+              } finally {
+                  setIsLoadingFiles(false);
+              }
           };
 
           return (
@@ -1515,15 +1656,21 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
                         </button>
 
                         <div className="grid grid-cols-2 gap-3">
-                          <button onClick={handleSaveBudget} className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
-                            <i className="fa-solid fa-download"></i> Salvar .json
+                          <button onClick={handleSaveLocal} className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-solid fa-download"></i> Salvar (PC)
                           </button>
-                          
-                          <button onClick={handleImportClick} className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
-                            <i className="fa-solid fa-upload"></i> Importar .json
+                          <button onClick={handleImportLocalClick} className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-solid fa-upload"></i> Importar (PC)
                           </button>
-                          <input type="file" accept=".json" ref={fileInputRef} onChange={handleFileUpload} style={{ display: 'none' }} />
+
+                          <button onClick={handleSaveBudget} disabled={isSaving} className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            {isSaving ? <span className="loader border-blue-700 border-t-transparent w-4 h-4"></span> : <i className="fa-solid fa-cloud-arrow-up"></i>} Salvar Nuvem
+                          </button>
+                          <button onClick={handleImportClick} className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-solid fa-cloud-arrow-down"></i> Importar Nuvem
+                          </button>
                         </div>
+                        <input type="file" accept=".json" ref={fileInputRef} onChange={handleFileUpload} style={{ display: 'none' }} />
                       </div>
                       
                     </div>
@@ -1531,6 +1678,58 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
 
                 </div>
               </div>
+
+              {/* MODAL DE IMPORTAÇÃO DO GITHUB */}
+              {showImportModal && (
+                  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden">
+                      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl">
+                          <div className="flex justify-between items-center p-6 border-b border-zinc-200">
+                              <h2 className="text-xl font-bold text-zinc-800 flex items-center gap-2">
+                                  <i className="fa-solid fa-cloud text-amber-500"></i>
+                                  Orçamentos Salvos (GitHub)
+                              </h2>
+                              <button onClick={() => setShowImportModal(false)} className="text-zinc-400 hover:text-red-500 transition-colors">
+                                  <i className="fa-solid fa-xmark text-2xl"></i>
+                              </button>
+                          </div>
+                          
+                          <div className="p-6 overflow-y-auto flex-1">
+                              {isLoadingFiles ? (
+                                  <div className="text-center py-10">
+                                      <span className="loader border-zinc-300 border-t-amber-500 w-10 h-10 border-4"></span>
+                                      <p className="mt-4 text-zinc-500 font-medium">Buscando orçamentos...</p>
+                                  </div>
+                              ) : githubFiles.length === 0 ? (
+                                  <div className="text-center py-10 bg-zinc-50 rounded-xl border border-zinc-200">
+                                      <i className="fa-regular fa-folder-open text-4xl text-zinc-300 mb-3"></i>
+                                      <p className="text-zinc-500 font-medium">Nenhum orçamento encontrado.</p>
+                                      <p className="text-xs text-zinc-400 mt-1">Salve um orçamento para que ele apareça aqui.</p>
+                                  </div>
+                              ) : (
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                      {githubFiles.map((file) => (
+                                          <div key={file.sha} className="border border-zinc-200 rounded-xl p-4 hover:border-amber-400 hover:bg-amber-50 transition-colors flex flex-col justify-between group">
+                                              <div className="mb-4">
+                                                  <h3 className="font-bold text-zinc-700 text-sm break-all">
+                                                      <i className="fa-regular fa-file-lines text-amber-500 mr-2"></i>
+                                                      {file.name.replace('orcamento-', '').replace('.json', '').replaceAll('-', ' ').toUpperCase()}
+                                                  </h3>
+                                                  <p className="text-xs text-zinc-400 mt-1">{file.name}</p>
+                                              </div>
+                                              <button 
+                                                  onClick={() => loadBudgetFromGithub(file.url)}
+                                                  className="w-full bg-zinc-800 text-white text-xs font-bold py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                              >
+                                                  Carregar Dados
+                                              </button>
+                                          </div>
+                                      ))}
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+              )}
 
               {/* MODAL DO CONTRATO E PAGAMENTO */}
               {showContractModal && (
@@ -1707,15 +1906,23 @@ CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
                                       
                                       <div className="grid grid-cols-2 gap-3">
                                           <button 
-                                              onClick={handleSaveBudget}
-                                              className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                                              onClick={handleSaveLocal}
+                                              className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
                                           >
-                                              <i className="fa-solid fa-download"></i> Salvar Informações (.json)
+                                              <i className="fa-solid fa-download"></i> Salvar Info (PC)
                                           </button>
                                           
                                           <button 
+                                              onClick={handleSaveBudget}
+                                              disabled={isSaving}
+                                              className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                                          >
+                                              {isSaving ? <span className="loader border-blue-700 border-t-transparent w-4 h-4"></span> : <i className="fa-solid fa-cloud-arrow-up"></i>} Salvar Info (Nuvem)
+                                          </button>
+
+                                          <button 
                                               onClick={handlePrintContract}
-                                              className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm"
+                                              className="col-span-2 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm"
                                           >
                                               <i className="fa-solid fa-print"></i> Imprimir Contrato (PDF)
                                           </button>
