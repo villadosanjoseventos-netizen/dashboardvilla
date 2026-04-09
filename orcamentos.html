@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Integrado - Villa dos Anjos</title>
+    <!-- Tailwind CSS para o visual -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bibliotecas React e Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      @media print {
+        @page { margin: 0; }
+        body { margin: 1.5cm; background-color: white !important; }
+        .print\:hidden { display: none !important; }
+        .print\:block { display: block !important; }
+        .shadow-xl, .shadow-sm { box-shadow: none !important; }
+      }
+      .transition-all { transition: all 0.3s ease; }
+      
+      .loader {
+          border: 2px solid #e5e7eb;
+          border-top: 2px solid #d4af37;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          animation: spin 1s linear infinite;
+          display: inline-block;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      
+      /* Estilo da caixa copiável do contrato */
+      .contract-box {
+          font-family: 'Courier New', Courier, monospace;
+          white-space: pre-wrap;
+          background-color: #f4f4f5;
+          border: 1px solid #d4d4d8;
+          padding: 2rem;
+          border-radius: 0.5rem;
+          font-size: 0.85rem;
+          line-height: 1.6;
+          max-height: 500px;
+          overflow-y: auto;
+          color: #27272a;
+      }
+    </style>
+</head>
+<body class="bg-zinc-50">
+    <div id="root"></div>
+
+    <!-- ===================================================================== -->
+    <!-- FUNÇÕES GLOBAIS DE GERAÇÃO E FORMATAÇÃO (O MOTOR DA PROPOSTA VIP) -->
+    <!-- ===================================================================== -->
+    <script type="text/javascript">
+        // Codifica para Base64 lidando com acentos
+        function utf8_to_b64(str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        }
+
+        function formatarDataPorExtenso(dataString) {
+            if(!dataString) return "";
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const partes = dataString.split('-');
+            const data = new Date(partes[0], partes[1] - 1, partes[2]);
+            return `${data.getDate()} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
+        }
+
+        function calcularDataValidade() {
+            const dataAtual = new Date();
+            dataAtual.setDate(dataAtual.getDate() + 7);
+            const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            return `${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}`;
+        }
+
+        // Esta função contém o TEMPLATE GIGANTE DE LUXO que será gerado.
+        function generateLuxuryHTML(nomeCliente, dataEventoRaw, qtdConvidados, valorFormatado, tipoEvento, ceremonyOnSite, recepcaoHTML, docesHTML, bebidasHTML, entHTML) {
+            const dataEvento = formatarDataPorExtenso(dataEventoRaw);
+            const dataEventoCurta = dataEventoRaw ? dataEventoRaw.split('-').reverse().join('/') : ""; 
+            const dataValidade = calcularDataValidade();
+            const textoWhatsapp = `Olá! Recebi a proposta e gostaria de pré-reservar a minha data (${dataEventoCurta})!`;
+            const linkWhatsapp = `https://wa.me/5577988763286?text=${encodeURIComponent(textoWhatsapp)}`;
+
+            // Blocos condicionais da Cerimônia
+            const cerimoniaCard = ceremonyOnSite ? `
+                <div class="border-gradient-gold p-10 md:p-14 bg-luxury-black-light/50 backdrop-blur-sm relative group">
+                    <div class="absolute top-0 right-0 p-6 text-gold opacity-20 group-hover:opacity-100 transition-opacity text-4xl font-serif">I</div>
+                    <h3 class="text-3xl font-serif text-gold mb-6 border-b border-gold/20 pb-6">Cerimônia<br><span class="text-nude-light italic">No Local</span></h3>
+                    <p class="text-gray-200 font-light leading-relaxed mb-6">Oferecemos um cenário deslumbrante para a consagração do seu momento, com espaços perfeitamente integrados para criar uma atmosfera etérea e inesquecível.</p>
+                    <p class="text-gray-200 font-light leading-relaxed">Paisagismo requintado que funciona como moldura natural para a fotografia do seu evento.</p>
+                </div>` : '';
+            
+            const cerimoniaGrid = ceremonyOnSite ? 'md:grid-cols-2' : 'md:grid-cols-1 max-w-3xl mx-auto';
+            const numRecep = ceremonyOnSite ? 'II' : 'I';
+
+            let templateHTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta Exclusiva - Villa dos Anjos | [[NOME_CLIENTE]]</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-black: #0a0a0a;
+            --color-black-light: #141414;
+            --color-nude: #e3d5c8;
+            --color-nude-light: #f5ebe1;
+            --color-gold: #d4af37;
+            --color-gold-dark: #aa771c;
+        }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--color-black); color: var(--color-nude-light); overflow-x: hidden; scroll-behavior: smooth; }
+        h1, h2, h3, h4, .font-serif { font-family: 'Playfair Display', serif; }
+        .bg-luxury-black { background-color: var(--color-black); }
+        .bg-luxury-black-light { background-color: var(--color-black-light); }
+        .bg-nude { background-color: var(--color-nude); color: var(--color-black); }
+        .bg-nude-light { background-color: var(--color-nude-light); color: var(--color-black); }
+        .text-gold { color: var(--color-gold); }
+        .text-nude { color: var(--color-nude); }
+        .text-gradient-gold { background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .border-gradient-gold { border: 1px solid; border-image-slice: 1; border-width: 1px; border-image-source: linear-gradient(to right, #BF953F, #B38728, #AA771C); }
+        .gold-line { height: 1px; background: linear-gradient(to right, transparent, var(--color-gold), transparent); width: 100%; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .btn-glow { position: relative; background: linear-gradient(to right, #BF953F, #AA771C); color: #000; z-index: 1; overflow: hidden; transition: all 0.3s ease; }
+        .btn-glow::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, #FCF6BA, #BF953F); z-index: -1; transition: opacity 0.3s ease; opacity: 0; }
+        .btn-glow:hover::before { opacity: 1; }
+        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4); }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#d4af37] selection:text-black">
+
+    <header class="min-h-screen flex flex-col justify-center items-center relative px-6 text-center bg-luxury-black border-b border-gold/20">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.05)_0%,_transparent_60%)]"></div>
+        <div class="reveal max-w-4xl mx-auto z-10 w-full">
+            <div class="mb-8"><span class="text-gold text-2xl tracking-[0.4em] font-light">✧ ✦ ✧</span></div>
+            <p class="uppercase tracking-[0.4em] text-gold text-sm md:text-base mb-6 font-light">Proposta Exclusiva de Evento</p>
+            <h1 class="text-6xl md:text-8xl font-serif mb-6 text-nude-light tracking-wide">Villa dos Anjos</h1>
+            <p class="text-2xl md:text-4xl font-serif italic text-gradient-gold mb-12">Para [[NOME_CLIENTE]]</p>
+            <div class="inline-flex flex-col md:flex-row items-center justify-center gap-6 text-xs md:text-sm font-light tracking-widest uppercase border-gradient-gold px-8 py-6 rounded-sm bg-black/50 backdrop-blur-sm">
+                <div class="flex items-center gap-3"><span class="text-gold text-lg">✧</span> [[DATA_EVENTO]]</div>
+                <div class="hidden md:block text-gold opacity-30">|</div>
+                <div class="flex items-center gap-3"><span class="text-gold text-lg">✧</span> [[QTD_CONVIDADOS]] Convidados</div>
+                <div class="hidden md:block text-gold opacity-30">|</div>
+                <div class="flex items-center gap-3"><span class="text-gold text-lg">✧</span> [[TIPO_EVENTO]]</div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 animate-bounce">
+            <p class="text-xs uppercase tracking-[0.3em] text-gold/70 mb-3 font-light">A Experiência</p>
+            <div class="text-gold text-xl font-light">↓</div>
+        </div>
+    </header>
+
+    <main>
+        <section class="py-32 bg-nude relative">
+            <div class="container mx-auto px-6 max-w-4xl reveal text-center">
+                <h2 class="text-4xl md:text-5xl font-serif text-black mb-8 leading-tight">A Consagração do Seu Dia<br>Merece o <span class="italic text-gradient-gold">Cenário Perfeito</span></h2>
+                <div class="gold-line w-32 mx-auto !bg-gradient-to-r !from-transparent !to-transparent !via-[#aa771c] mb-8"></div>
+                <p class="text-xl text-gray-900 leading-relaxed font-medium">
+                    O requinte mora nos detalhes invisíveis. A Villa dos Anjos desenhou um pacote <strong>All-Inclusive</strong> para garantir que seu único compromisso no seu grande dia seja celebrar. Centralizamos gastronomia primorosa, cenografia luxuosa e uma estrutura impecável em uma única proposta de excelência.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-32 bg-luxury-black relative">
+            <div class="container mx-auto px-6 max-w-6xl reveal">
+                <div class="text-center mb-20">
+                    <p class="uppercase tracking-[0.3em] text-gold text-sm mb-4">A Estrutura</p>
+                    <h2 class="text-4xl md:text-6xl font-serif text-nude-light mb-6">Onde a Natureza<br>Encontra o Luxo</h2>
+                </div>
+                <div class="grid grid-cols-1 [[CERIMONIA_GRID]] gap-12">
+                    [[CERIMONIA_CARD]]
+                    <div class="border-gradient-gold p-10 md:p-14 bg-luxury-black-light/50 backdrop-blur-sm relative group">
+                        <div class="absolute top-0 right-0 p-6 text-gold opacity-20 group-hover:opacity-100 transition-opacity text-4xl font-serif">[[NUM_RECEP]]</div>
+                        <h3 class="text-3xl font-serif text-gold mb-6 border-b border-gold/20 pb-6">Recepção<br><span class="text-nude-light italic">Sofisticada</span></h3>
+                        <p class="text-gray-200 font-light leading-relaxed mb-6">Um salão principal majestoso, adornado com lustres de cristal, sofás refinados e projeto de iluminação cênica que se adapta ao clima da sua festa.</p>
+                        <p class="text-gray-200 font-light leading-relaxed">Área avarandada com cobertura total, garantindo o conforto absoluto de seus convidados independentemente das condições climáticas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-32 bg-nude-light text-black border-y border-gold/20">
+            <div class="container mx-auto px-6 max-w-6xl reveal">
+                <div class="text-center mb-20">
+                    <p class="uppercase tracking-[0.3em] text-gold-dark text-sm mb-4">Experiência Sensorial</p>
+                    <h2 class="text-4xl md:text-5xl font-serif text-black mb-6">Cardápio & Atrações</h2>
+                    <div class="gold-line w-24 mx-auto !bg-gradient-to-r !from-transparent !to-transparent !via-[#aa771c]"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    <div class="space-y-10">
+                        
+                        <div>
+                            <h4 class="font-serif text-2xl text-gold-dark mb-4 border-b border-black/10 pb-3">✦ Recepção e Coquetel</h4>
+                            <div class="text-gray-900 font-medium text-sm leading-relaxed pl-2">
+                                [[ITENS_RECEPCAO]]
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-serif text-2xl text-gold-dark mb-4 border-b border-black/10 pb-3">✦ Doces e Celebração</h4>
+                            <div class="text-gray-900 font-medium text-sm leading-relaxed pl-2">
+                                [[ITENS_DOCES]]
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-serif text-2xl text-gold-dark mb-4 border-b border-black/10 pb-3">✦ Bebidas e Drinks</h4>
+                            <div class="text-gray-900 font-medium text-sm leading-relaxed pl-2">
+                                [[ITENS_BEBIDAS]]
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-serif text-2xl text-gold-dark mb-4 border-b border-black/10 pb-3">✦ Entretenimento e Diversão</h4>
+                            <div class="text-gray-900 font-medium text-sm leading-relaxed pl-2">
+                                [[ITENS_ENTRETENIMENTO]]
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="bg-nude p-10 border border-gold/30 rounded-sm h-fit sticky top-10">
+                        <h3 class="text-2xl font-serif text-gold-dark mb-8 text-center">Estrutura All-Inclusive</h3>
+                        <ul class="space-y-6 text-gray-900 font-medium text-sm">
+                            <li class="flex items-start">
+                                <span class="text-gold-dark text-lg mr-4">♛</span>
+                                <div><strong class="block text-black font-bold text-base mb-1">Cenografia Completa</strong>Projeto temático com decoração das mesas, toalhas, arranjos e Espaço Instagramável.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-gold-dark text-lg mr-4">♛</span>
+                                <div><strong class="block text-black font-bold text-base mb-1">Mobiliário de Luxo</strong>Cadeiras estofadas, mesas, bistrôs, poltronas, sofás e aparadores.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-gold-dark text-lg mr-4">♛</span>
+                                <div><strong class="block text-black font-bold text-base mb-1">Equipe de Excelência</strong>Garçons, cozinha, segurança/portaria e auxiliar de conservação do ambiente.</div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-gold-dark text-lg mr-4">♛</span>
+                                <div><strong class="block text-black font-bold text-base mb-1">Materiais & Tecnologia</strong>Louçaria de vidro/cristal (sem descartáveis), Data Show e Sonorização ambiente.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-32 bg-luxury-black relative overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
+            <div class="container mx-auto px-6 max-w-5xl reveal relative z-10">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-serif text-nude-light mb-6">O Seu Investimento</h2>
+                    <p class="text-gray-300 font-light text-lg max-w-2xl mx-auto">A garantia absoluta de um evento de alto padrão, centralizado em um único contrato, sem custos ocultos.</p>
+                </div>
+                <div class="border-gradient-gold p-1 md:p-2 bg-gradient-to-b from-gold/20 to-transparent max-w-4xl mx-auto rounded-sm">
+                    <div class="bg-luxury-black p-10 md:p-16 text-center rounded-sm">
+                        <p class="uppercase tracking-[0.4em] text-gold text-sm mb-6">Valor Integral do Pacote</p>
+                        <div class="text-6xl md:text-8xl font-serif mb-4 text-gradient-gold">R$ [[VALOR_TOTAL]]<span class="text-3xl">,00</span></div>
+                        <p class="text-gray-400 font-light tracking-widest text-xs uppercase mb-16 pb-12 border-b border-white/10">Orçamento Completo para [[QTD_CONVIDADOS]] Convidados</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                            <div class="bg-white/5 p-8 border border-gold/30 rounded-sm hover:border-gold transition-colors duration-300">
+                                <div class="text-gold text-3xl mb-4">💳</div>
+                                <h4 class="text-xl font-serif text-nude-light mb-2">Facilidade no Pagamento</h4>
+                                <p class="text-gray-300 font-light text-sm leading-relaxed">Sabemos que a organização do seu evento exige planejamento financeiro. Por isso, oferecemos parcelamento personalizado de acordo com a nossa proposta.</p>
+                            </div>
+                            <div class="bg-gradient-to-br from-gold/10 to-transparent p-8 border border-gold rounded-sm relative overflow-hidden">
+                                <div class="absolute -right-4 -top-4 text-6xl opacity-10 text-gold">✦</div>
+                                <div class="text-gold text-3xl mb-4">💎</div>
+                                <h4 class="text-xl font-serif text-nude-light mb-2">Condição Especial</h4>
+                                <p class="text-gray-300 font-light text-sm leading-relaxed">Valorizamos o seu planejamento. Para <strong>pagamentos à vista</strong>, aplicamos um desconto exclusivo sobre o valor total do contrato.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-gold/60 text-xs mt-8 uppercase tracking-widest font-light">
+                    * Condições válidas por 7 dias (até [[DATA_VALIDADE]])
+                </p>
+            </div>
+        </section>
+
+        <section class="py-32 bg-nude relative">
+            <div class="container mx-auto px-6 reveal">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-4xl md:text-6xl font-serif text-black mb-8 leading-tight">A Sua Data <br><span class="italic text-gradient-gold">Está Disponível</span></h2>
+                    <div class="text-lg md:text-xl text-gray-900 font-medium leading-relaxed mb-16 max-w-3xl mx-auto">
+                        <p>Neste exato momento, o dia <strong>[[DATA_EVENTO]]</strong> encontra-se <span class="font-bold text-black border-b border-gold">livre</span> em nossa agenda.</p>
+                        <p class="mt-4 text-base font-light text-gray-800">Tudo o que separa você da tranquilidade de ter a Villa dos Anjos reservada é uma única ação. Garanta a exclusividade do seu evento.</p>
+                    </div>
+                    <div class="bg-white p-12 md:p-16 rounded-sm shadow-2xl border border-gold/20 relative z-20">
+                        <a href="[[LINK_WHATSAPP]]" target="_blank" class="btn-glow inline-block px-10 py-5 text-sm md:text-base font-bold uppercase tracking-[0.2em] rounded-sm shadow-xl w-full md:w-auto">
+                            PRÉ-RESERVAR MINHA DATA AGORA
+                        </a>
+                        <p class="mt-8 text-xs text-gray-500 uppercase tracking-widest font-light">O clique direcionará para atendimento preferencial via WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-luxury-black py-12 text-center border-t border-white/5">
+        <div class="container mx-auto px-6 text-sm text-gray-400 font-light">
+            <span class="text-gold text-2xl block mb-6">✧</span>
+            <p class="text-nude-light font-serif text-2xl mb-2">Villa dos Anjos Eventos</p>
+            <p class="mb-6">Transformando sonhos em memórias inesquecíveis.</p>
+            <p class="tracking-widest flex items-center justify-center gap-4">
+                <span><i class="fa-brands fa-whatsapp text-gold text-lg"></i> (77) 98876-3286</span> 
+                <span class="text-gold/30">|</span> 
+                <span><i class="fa-brands fa-instagram text-gold text-lg"></i> @villadosanjoseventos</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reveals = document.querySelectorAll('.reveal');
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) { entry.target.classList.add('active'); }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+            reveals.forEach(reveal => revealOnScroll.observe(reveal));
+            setTimeout(() => {
+                const firstReveal = document.querySelector('header .reveal');
+                if(firstReveal) firstReveal.classList.add('active');
+            }, 100);
+        });
+    <\/script>
+</body>
+</html>`;
+            templateHTML = templateHTML.replaceAll('[[NOME_CLIENTE]]', nomeCliente);
+            templateHTML = templateHTML.replaceAll('[[DATA_EVENTO]]', dataEvento);
+            templateHTML = templateHTML.replaceAll('[[QTD_CONVIDADOS]]', qtdConvidados);
+            templateHTML = templateHTML.replaceAll('[[TIPO_EVENTO]]', tipoEvento);
+            templateHTML = templateHTML.replaceAll('[[VALOR_TOTAL]]', valorFormatado);
+            templateHTML = templateHTML.replaceAll('[[DATA_VALIDADE]]', dataValidade);
+            templateHTML = templateHTML.replaceAll('[[LINK_WHATSAPP]]', linkWhatsapp);
+            
+            templateHTML = templateHTML.replaceAll('[[CERIMONIA_CARD]]', cerimoniaCard);
+            templateHTML = templateHTML.replaceAll('[[CERIMONIA_GRID]]', cerimoniaGrid);
+            templateHTML = templateHTML.replaceAll('[[NUM_RECEP]]', numRecep);
+
+            templateHTML = templateHTML.replaceAll('[[ITENS_RECEPCAO]]', recepcaoHTML);
+            templateHTML = templateHTML.replaceAll('[[ITENS_DOCES]]', docesHTML);
+            templateHTML = templateHTML.replaceAll('[[ITENS_BEBIDAS]]', bebidasHTML);
+            templateHTML = templateHTML.replaceAll('[[ITENS_ENTRETENIMENTO]]', entHTML);
+
+            return templateHTML;
+        }
+    </script>
+
+    <script type="text/babel">
+        const { useState, useMemo, useRef, useEffect } = React;
+
+        // =====================================================================
+        // CONFIGURAÇÕES GERAIS E PRECIFICAÇÃO (ADMIN)
+        // =====================================================================
+        const FIXED_HOLIDAYS = [
+          '01-01', '04-21', '05-01', '07-02', '08-15', '09-07', '10-12', '11-02', '11-09', '11-15', '12-25'
+        ];
+
+        const VARIABLE_HOLIDAYS = {
+          2024: ['2024-02-12', '2024-02-13', '2024-03-29', '2024-05-30'],
+          2025: ['2025-03-03', '2025-03-04', '2025-04-18', '2025-06-19'],
+          2026: ['2026-02-16', '2026-02-17', '2026-04-03', '2026-06-04'],
+          2027: ['2027-02-08', '2027-02-09', '2027-03-26', '2027-05-27']
+        };
+
+        const isHoliday = (dateString) => {
+          if (!dateString) return false;
+          const [y, m, d] = dateString.split('-');
+          const md = `${m}-${d}`;
+          return FIXED_HOLIDAYS.includes(md) || (VARIABLE_HOLIDAYS[y] && VARIABLE_HOLIDAYS[y].includes(dateString));
+        };
+
+        const isBusinessDay = (dateString) => {
+          const [y, m, d] = dateString.split('-');
+          const date = new Date(y, m - 1, d);
+          const day = date.getDay();
+          return (day !== 0 && day !== 6) && !isHoliday(dateString);
+        };
+
+        const getNextDayString = (dateString) => {
+          const [y, m, d] = dateString.split('-');
+          const date = new Date(y, m - 1, d);
+          date.setDate(date.getDate() + 1);
+          return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+        };
+
+        const DECORATION_TYPES = [
+          { id: 'Casamento', label: 'Casamento', perGuest: { 'Simples': 15, 'Completa': 25, 'Luxo': 35 } },
+          { id: 'Aniversário', label: 'Aniversário', perGuest: { 'Simples': 10, 'Completa': 18, 'Luxo': 25 } },
+          { id: 'Infantil', label: 'Infantil', perGuest: { 'Simples': 10, 'Completa': 18, 'Luxo': 25 } },
+          { id: 'Debutante', label: 'Debutante', perGuest: { 'Simples': 13, 'Completa': 20, 'Luxo': 28 } },
+          { id: 'Formatura Dia', label: 'Formatura Dia', perGuest: { 'Simples': 10, 'Completa': 18, 'Luxo': 25 } },
+          { id: 'Formatura Noite', label: 'Formatura Noite', perGuest: { 'Simples': 13, 'Completa': 20, 'Luxo': 28 } },
+          { id: 'Confraternização', label: 'Confraternização', perGuest: { 'Simples': 10, 'Completa': 15, 'Luxo': 20 } },
+          { id: 'Corporativo', label: 'Corporativo', perGuest: { 'Simples': 5, 'Completa': 10, 'Luxo': 18 } }
+        ];
+
+        const DECORATION_LEVELS = ['Simples', 'Completa', 'Luxo'];
+        const FIXED_DECORATION_COSTS = { 'Simples': 1000, 'Completa': 1200, 'Luxo': 1500 };
+        const CHURCH_DECORATION_COSTS = { 'Não': 0, 'Simples': 1500, 'Completa': 2500, 'Luxo': 3500, 'Super Luxo': 5000 };
+
+        const BUFFET_FIXED = [
+          { id: 'self_service', label: 'Buffet Self Service', price: 35 },
+          { id: 'asiatico', label: 'Buffet Asiático', price: 35 },
+          { id: 'degustacao_premium', label: 'Mesa Degustação Premium', price: 30 },
+          { id: 'degustacao_standard', label: 'Mesa Degustação Standard', price: 25 },
+          { id: 'ilha_massas', label: 'Ilha de Massas', price: 25 },
+          { id: 'mexicano', label: 'Buffet Mexicano', price: 25 },
+          { id: 'mesa_frios', label: 'Mesa de Frios', price: 20 },
+          { id: 'mini_acarajes', label: 'Mini Acarajés', price: 15 },
+          { id: 'piquenique_infantil', label: 'Piquenique Infantil', price: 15 },
+        ];
+
+        const BUFFET_VARIABLE = [
+          { id: 'salgados_trad', label: 'Salgados Tradicionais', price: 2.2 },
+          { id: 'salgados_finos', label: 'Salgados Finos', price: 2.7 },
+          { id: 'doces_trad', label: 'Doces Tradicionais', price: 2.2 },
+          { id: 'doces_finos', label: 'Doces Finos', price: 2.7 },
+          { id: 'canapes', label: 'Canapés', price: 3.5 },
+          { id: 'mini_empratados', label: 'Mini Empratados', price: 7 },
+          { id: 'espetinhos', label: 'Espetinhos Churrasco', price: 8 },
+          { id: 'mini_fast_food', label: 'Mini Fast Food', price: 7 },
+        ];
+
+        const BEVERAGE_TYPES = [
+          { id: 'sem_alcool', label: 'Sem Álcool', price: 8 },
+          { id: 'com_alcool', label: 'Com Álcool', price: 15 },
+          { id: 'com_alcool_premium', label: 'Com Álcool Premium', price: 22 },
+        ];
+
+        const DRINK_TYPES = [
+          { id: 'sem_drinks', label: 'Sem Drinks', price: 0 },
+          { id: 'drinks_sem_alcool', label: 'Drinks Sem Álcool', price: 20 },
+          { id: 'drinks_standard', label: 'Drinks Simples', price: 20 },
+          { id: 'drinks_premium', label: 'Drinks Premium', price: 25 },
+          { id: 'drinks_luxo', label: 'Drinks Luxo', price: 30 },
+        ];
+
+        const SERVICES_OPTIONS = [
+          { id: 'seguranca', label: 'Portaria e Segurança', price: 180 },
+          { id: 'limpeza', label: 'Limpeza', price: 150 },
+          { id: 'copa', label: 'Copa', price: 150 },
+          { id: 'cozinha', label: 'Cozinha', price: 200 },
+          { id: 'garcons', label: 'Garçons', price: 180 },
+          { id: 'maitre', label: 'Maître', price: 250 },
+          { id: 'cerimonial', label: 'Cerimonial', price: 350 },
+          { id: 'mestre_cerimonia', label: 'Mestre de Cerimônia', price: 500 },
+          { id: 'animador', label: 'Animador Infantil', price: 350 },
+        ];
+
+        const ENTERTAINMENT_OPTIONS = [
+          { id: 'son_standard', label: 'Sonorização Simples', price: 600 },
+          { id: 'son_prof', label: 'Sonorização Profissional', price: 1500 },
+          { id: 'voz_violao', label: 'Voz e Violão', price: 800 },
+          { id: 'banda_standard', label: 'Banda Standard', price: 1800 },
+          { id: 'banda_premium', label: 'Banda Premium', price: 2500 },
+          { id: 'banda_luxo', label: 'Banda Luxo', price: 3000 },
+          { id: 'banda_inst', label: 'Banda Instrumental', price: 1600 },
+          { id: 'dj_standard', label: 'DJ Standard', price: 600 },
+          { id: 'dj_premium', label: 'DJ Premium', price: 1500 },
+          { id: 'dj_luxo', label: 'DJ Luxo', price: 2000 },
+          { id: 'pista_led', label: 'Pista de LED', price: 2000 },
+          { id: 'brinquedos', label: 'Brinquedos & Guloseimas', price: 1000 },
+        ];
+
+        function App() {
+          const today = new Date().toLocaleDateString('en-CA');
+          
+          // Estados Originais do Formulário
+          const [error, setError] = useState('');
+          const [clientName, setClientName] = useState('');
+          const [clientPhone, setClientPhone] = useState('');
+          const [guests, setGuests] = useState(30);
+          const [selectedDate, setSelectedDate] = useState(today);
+          const [eventTime, setEventTime] = useState('14h às 21h');
+          const [includeServiceTax, setIncludeServiceTax] = useState(false);
+          
+          const [hasDecoration, setHasDecoration] = useState(false);
+          const [decorationType, setDecorationType] = useState('Casamento');
+          const [decorationLevel, setDecorationLevel] = useState('Simples');
+          const [ceremonyOnSite, setCeremonyOnSite] = useState(false);
+          const [churchDecoration, setChurchDecoration] = useState('Não');
+
+          const [hasBuffet, setHasBuffet] = useState(false);
+          const [buffetFixedSelections, setBuffetFixedSelections] = useState({});
+          const [buffetVarSelections, setBuffetVarSelections] = useState({});
+          const [hasCake, setHasCake] = useState(false);
+          
+          const [hasBeverages, setHasBeverages] = useState(false);
+          const [beverageSelection, setBeverageSelection] = useState('sem_alcool');
+          const [drinkSelection, setDrinkSelection] = useState('sem_drinks');
+          
+          const [hasServices, setHasServices] = useState(false);
+          const [servicesSelections, setServicesSelections] = useState({});
+          
+          const [hasEntertainment, setHasEntertainment] = useState(false);
+          const [entertainmentSelections, setEntertainmentSelections] = useState({});
+
+          const fileInputRef = useRef(null);
+
+          // Estados Integração GitHub
+          const [ghConfigOpen, setGhConfigOpen] = useState(false);
+          const [ghToken, setGhToken] = useState(localStorage.getItem('ghToken') || '');
+          const [ghOwner, setGhOwner] = useState(localStorage.getItem('ghOwner') || '');
+          const [ghRepo, setGhRepo] = useState(localStorage.getItem('ghRepo') || '');
+          const [isPublishing, setIsPublishing] = useState(false);
+          const [publishedLink, setPublishedLink] = useState('');
+
+          // Estados Contrato e Desconto
+          const [showContractModal, setShowContractModal] = useState(false);
+          const [clientCPF, setClientCPF] = useState('');
+          const [clientRG, setClientRG] = useState('');
+          const [clientAddress, setClientAddress] = useState('');
+          const [contractText, setContractText] = useState('');
+          
+          const [hasDiscount, setHasDiscount] = useState(false);
+          const [discountPercent, setDiscountPercent] = useState(5);
+
+          // Estados Importação/Exportação GitHub
+          const [isSaving, setIsSaving] = useState(false);
+          const [showImportModal, setShowImportModal] = useState(false);
+          const [githubFiles, setGithubFiles] = useState([]);
+          const [isLoadingFiles, setIsLoadingFiles] = useState(false);
+
+          // Pagamento Estruturado
+          const [payType, setPayType] = useState('parcelado'); 
+          const [cashDate, setCashDate] = useState('');
+          
+          const [dpValue, setDpValue] = useState('');
+          const [dpDate, setDpDate] = useState('');
+          const [dpMethod, setDpMethod] = useState('PIX');
+          const [dpInstallments, setDpInstallments] = useState(2);
+          
+          const [instCount, setInstCount] = useState(1);
+          const [instValue, setInstValue] = useState('');
+          const [instFirstDate, setInstFirstDate] = useState('');
+          const [instMethod, setInstMethod] = useState('PIX');
+
+          useEffect(() => {
+              localStorage.setItem('ghToken', ghToken);
+              localStorage.setItem('ghOwner', ghOwner);
+              localStorage.setItem('ghRepo', ghRepo);
+          }, [ghToken, ghOwner, ghRepo]);
+
+          const COST_PER_GUEST = 10;
+          const MINIMUM_GUESTS = 30;
+          
+          // MULTIPLICADOR DE TAXA DE SERVIÇO (15%)
+          const taxMultiplier = includeServiceTax ? 1.15 : 1;
+
+          const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0);
+          const formatDateBR = (dateString) => {
+            if (!dateString) return '';
+            const [y, m, d] = dateString.split('-');
+            return `${d}/${m}/${y}`;
+          };
+
+          // Regras de Dia da Semana e Feriado
+          const { baseCost, ruleName } = useMemo(() => {
+            if (!selectedDate) return { baseCost: 1500, ruleName: "Selecione uma data" };
+            const [y, m, d] = selectedDate.split('-');
+            const dateObj = new Date(y, m - 1, d);
+            const dayOfWeek = dateObj.getDay();
+            const isHol = isHoliday(selectedDate);
+            const nextDateStr = getNextDayString(selectedDate);
+            const nextDayIsBusiness = isBusinessDay(nextDateStr);
+            const nextDayIsHol = isHoliday(nextDateStr);
+
+            if (dayOfWeek === 6) return { baseCost: 3000, ruleName: "Sábado" };
+            if (dayOfWeek === 0 && (!nextDayIsBusiness || nextDayIsHol)) return { baseCost: 3000, ruleName: "Domingo (Véspera de feriado)" };
+            if (isHol && !nextDayIsBusiness) return { baseCost: 3000, ruleName: "Feriado prolongado" };
+            if (dayOfWeek === 5 || dayOfWeek === 0) return { baseCost: 2300, ruleName: "Sexta ou Domingo" };
+            if (isHol || nextDayIsHol) return { baseCost: 2300, ruleName: "Feriado ou Véspera" };
+            return { baseCost: 1500, ruleName: "Segunda a Quinta" };
+          }, [selectedDate]);
+
+          // Cálculos de custos
+          const effectiveBaseCost = baseCost * taxMultiplier;
+          const guestsCost = guests * COST_PER_GUEST * taxMultiplier;
+          
+          let decorationCost = 0;
+          let churchDecoCost = 0;
+          if (hasDecoration) {
+            const selectedType = DECORATION_TYPES.find(d => d.id === decorationType) || DECORATION_TYPES[0];
+            decorationCost = (FIXED_DECORATION_COSTS[decorationLevel] + (selectedType.perGuest[decorationLevel] * guests)) * taxMultiplier;
+            if (decorationType === 'Casamento') churchDecoCost = CHURCH_DECORATION_COSTS[churchDecoration] * taxMultiplier;
+          }
+
+          let buffetCost = 0;
+          const buffetItemsList = [];
+          if (hasBuffet) {
+            BUFFET_FIXED.forEach(item => {
+              if (buffetFixedSelections[item.id]) {
+                buffetCost += item.price * taxMultiplier * guests;
+                buffetItemsList.push(item.label);
+              }
+            });
+            BUFFET_VARIABLE.forEach(item => {
+              const sel = buffetVarSelections[item.id];
+              if (sel?.selected) {
+                buffetCost += item.price * taxMultiplier * (sel.qty || 1) * guests;
+                buffetItemsList.push(`${item.label} (x${sel.qty})`);
+              }
+            });
+            if (hasCake) {
+              buffetCost += (350 + (7 * guests)) * taxMultiplier;
+              buffetItemsList.push('Bolo Villa dos Anjos');
+            }
+          }
+
+          let beveragesCost = 0;
+          if (hasBeverages) {
+            const bev = BEVERAGE_TYPES.find(b => b.id === beverageSelection);
+            const drk = DRINK_TYPES.find(d => d.id === drinkSelection);
+            if (bev) beveragesCost += bev.price * taxMultiplier * guests;
+            if (drk) beveragesCost += drk.price * taxMultiplier * guests;
+          }
+
+          let servicesCost = 0;
+          const servicesItemsList = [];
+          if (hasServices) {
+            SERVICES_OPTIONS.forEach(item => {
+              const sel = servicesSelections[item.id];
+              if (sel?.selected) {
+                servicesCost += item.price * taxMultiplier * (sel.qty || 1);
+                servicesItemsList.push(`${item.label} (x${sel.qty})`);
+              }
+            });
+          }
+
+          let entertainmentCost = 0;
+          const entItemsList = [];
+          if (hasEntertainment) {
+            ENTERTAINMENT_OPTIONS.forEach(item => {
+              if (entertainmentSelections[item.id]) {
+                entertainmentCost += item.price * taxMultiplier;
+                entItemsList.push(item.label);
+              }
+            });
+          }
+
+          const totalCost = effectiveBaseCost + guestsCost + decorationCost + churchDecoCost + buffetCost + beveragesCost + servicesCost + entertainmentCost;
+          
+          // Custo Final com Desconto
+          const finalDiscountedCost = (hasDiscount && discountPercent > 0) ? totalCost * (1 - (discountPercent / 100)) : totalCost;
+
+          // Validação do Pagamento
+          const getPerc = (val) => finalDiscountedCost > 0 ? ((parseFloat(val || 0) / finalDiscountedCost) * 100).toFixed(1) : 0;
+          
+          const totalCalculado = payType === 'avista' 
+              ? finalDiscountedCost 
+              : parseFloat(dpValue || 0) + (parseInt(instCount || 1) * parseFloat(instValue || 0));
+          
+          const diffPago = finalDiscountedCost - totalCalculado;
+          const isPagamentoValido = Math.abs(diffPago) < 0.05;
+
+          // Função Auxiliar para formatar listas HTML
+          const formatListHTML = (arr, emptyMsg) => {
+              if(arr.length === 0) return `<p class="italic opacity-70">${emptyMsg}</p>`;
+              return `<ul class="list-disc pl-5 space-y-2">` + arr.map(i => `<li>${i}</li>`).join('') + `</ul>`;
+          };
+
+          // =======================================================================
+          // FUNÇÃO DE INTEGRAÇÃO COM GITHUB (GERADOR VIP)
+          // =======================================================================
+          const handlePublishGitHub = async () => {
+              if (!clientName || !selectedDate || !guests || !totalCost) {
+                  setError("Por favor, preencha o Nome do Cliente e a Data do Evento antes de gerar o link VIP.");
+                  setTimeout(() => setError(''), 4000);
+                  return;
+              }
+              if (!ghToken || !ghOwner || !ghRepo) {
+                  setError("Configuração Pendente: Preencha o Token, Usuário e Repositório do GitHub.");
+                  setGhConfigOpen(true);
+                  setTimeout(() => setError(''), 4000);
+                  return;
+              }
+
+              setIsPublishing(true);
+              setPublishedLink('');
+
+              try {
+                  // Prepara as listas divididas para o layout VIP
+                  let recepcaoItems = [];
+                  let docesItems = [];
+                  const docesIds = ['doces_trad', 'doces_finos'];
+                  
+                  if (hasBuffet) {
+                      BUFFET_FIXED.forEach(item => {
+                          if (buffetFixedSelections[item.id]) recepcaoItems.push(item.label);
+                      });
+                      BUFFET_VARIABLE.forEach(item => {
+                          const sel = buffetVarSelections[item.id];
+                          if (sel?.selected) {
+                              if (docesIds.includes(item.id)) docesItems.push(`${item.label} (x${sel.qty})`);
+                              else recepcaoItems.push(`${item.label} (x${sel.qty})`);
+                          }
+                      });
+                      if (hasCake) docesItems.push('Bolo Villa dos Anjos');
+                  }
+
+                  let bebidasItems = [];
+                  if (hasBeverages) {
+                      const bev = BEVERAGE_TYPES.find(b => b.id === beverageSelection);
+                      const drk = DRINK_TYPES.find(d => d.id === drinkSelection);
+                      if (bev) bebidasItems.push(bev.label);
+                      if (drk && drk.id !== 'sem_drinks') bebidasItems.push(drk.label);
+                  }
+
+                  const recepcaoHTML = formatListHTML(recepcaoItems, "Nenhum item selecionado para recepção.");
+                  const docesHTML = formatListHTML(docesItems, "Nenhum item selecionado para doces.");
+                  const bebidasHTML = formatListHTML(bebidasItems, "Bebidas e drinks sob responsabilidade do cliente.");
+                  const entHTML = formatListHTML(entItemsList, "Nenhuma atração de entretenimento inclusa no pacote.");
+
+                  // Formata o número (ex: 36300) para injetar no template sem o "R$"
+                  const valorFormatado = finalDiscountedCost.toLocaleString('pt-BR', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+                  
+                  const htmlContent = generateLuxuryHTML(
+                      clientName, selectedDate, guests, valorFormatado, 
+                      decorationType, ceremonyOnSite, 
+                      recepcaoHTML, docesHTML, bebidasHTML, entHTML
+                  );
+                  
+                  const base64Content = utf8_to_b64(htmlContent);
+
+                  const safePhone = clientPhone ? clientPhone.replace(/\D/g, '') : 'SemNumero';
+                  const baseName = clientName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-');
+                  const fileName = `${baseName}-${safePhone}.html`;
+                  
+                  const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/propostas/${fileName}`;
+
+                  let sha = null;
+                  const getResponse = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+                  if(getResponse.ok) {
+                      const getData = await getResponse.json();
+                      sha = getData.sha;
+                  }
+
+                  const bodyObj = {
+                      message: `Proposta de Luxo gerada para: ${clientName}`,
+                      content: base64Content
+                  };
+                  if(sha) bodyObj.sha = sha;
+
+                  const putResponse = await fetch(url, {
+                      method: 'PUT',
+                      headers: {
+                          'Authorization': `token ${ghToken}`,
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(bodyObj)
+                  });
+
+                  if(putResponse.ok) {
+                      const linkFinalOnline = `https://${ghOwner}.github.io/${ghRepo}/propostas/${fileName}`;
+                      setPublishedLink(linkFinalOnline);
+                  } else {
+                      const erro = await putResponse.json();
+                      setError("Erro do GitHub: " + erro.message);
+                      setTimeout(() => setError(''), 4000);
+                  }
+              } catch (error) {
+                  console.error(error);
+                  setError("Falha na conexão com a internet ou com o GitHub. Verifique os dados.");
+                  setTimeout(() => setError(''), 4000);
+              } finally {
+                  setIsPublishing(false);
+              }
+          };
+
+          const copiarLink = () => {
+              navigator.clipboard.writeText(publishedLink);
+              setError("✅ Link copiado para a área de transferência!");
+              setTimeout(() => setError(''), 3000);
+          };
+
+          // =====================================================================
+          // GERAÇÃO E IMPRESSÃO DO CONTRATO
+          // =====================================================================
+          const handleGenerateContract = () => {
+             if (payType === 'parcelado' && !isPagamentoValido) {
+                 setError("Corrija os valores de pagamento antes de gerar o contrato.");
+                 setTimeout(() => setError(''), 3000);
+                 return;
+             }
+
+             let servicosList = [];
+             
+             if (hasDecoration) {
+                 let decoStr = `Projeto de Decoração Temática (Padrão ${decorationLevel})`;
+                 if (ceremonyOnSite) decoStr += `, incluindo preparação estrutural do espaço da cerimônia no local`;
+                 if (decorationType === 'Casamento' && churchDecoration !== 'Não') decoStr += `, além de decoração da Igreja (Padrão ${churchDecoration})`;
+                 servicosList.push(decoStr + '.');
+             }
+             
+             if (hasBuffet && buffetItemsList.length > 0) {
+                 servicosList.push(`Fornecimento de Alimentação e Buffet: ${buffetItemsList.join(', ')}.`);
+             }
+             
+             if (hasBeverages) {
+                 let bebidasStr = [];
+                 const bev = BEVERAGE_TYPES.find(b => b.id === beverageSelection);
+                 const drk = DRINK_TYPES.find(d => d.id === drinkSelection);
+                 if (bev) bebidasStr.push(bev.label);
+                 if (drk && drk.id !== 'sem_drinks') bebidasStr.push(drk.label);
+                 if (bebidasStr.length > 0) servicosList.push(`Fornecimento de Bebidas: ${bebidasStr.join(' e ')}.`);
+             }
+             
+             if (hasServices && servicesItemsList.length > 0) {
+                 servicosList.push(`Equipe de Apoio e Profissionais: ${servicesItemsList.join(', ')}.`);
+             }
+             
+             if (hasEntertainment && entItemsList.length > 0) {
+                 servicosList.push(`Estrutura de Entretenimento e Som: ${entItemsList.join(', ')}.`);
+             }
+             
+             if (servicosList.length === 0) {
+                 servicosList.push(`Apenas locação do espaço físico e mobiliário padrão descrito na Cláusula Segunda.`);
+             }
+             
+             const servicosDinamicosTexto = servicosList.map((item, index) => `    ${String.fromCharCode(97 + index)}) ${item}`).join('\n');
+
+             let descontoInfo = '';
+             if (hasDiscount && discountPercent > 0) {
+                 descontoInfo = ` (valor já contempla o desconto especial concedido de ${discountPercent}%)`;
+             }
+
+             let condicoesPagamentoTexto = '';
+             if (payType === 'avista') {
+                 condicoesPagamentoTexto = `O pagamento será realizado à vista, no valor total de ${formatCurrency(finalDiscountedCost)}, a ser pago até o dia ${formatDateBR(cashDate) || '[DATA]'} via PIX/Transferência.`;
+             } else {
+                 const percEntrada = getPerc(dpValue);
+                 const percParcelas = getPerc(instCount * instValue);
+                 const textParcelaEntrada = dpMethod === 'Cartão Parcelado' ? ` em ${dpInstallments} vezes` : '';
+                 
+                 let instLastDateFormatted = '[INFORMAR VENCIMENTO]';
+                 let instFirstDateFormatted = formatDateBR(instFirstDate) || '[INFORMAR VENCIMENTO]';
+                 
+                 if (instFirstDate && instCount > 0) {
+                     const [y, m, d] = instFirstDate.split('-');
+                     const dateObj = new Date(y, m - 1, d);
+                     dateObj.setMonth(dateObj.getMonth() + (parseInt(instCount) - 1));
+                     const endY = dateObj.getFullYear();
+                     const endM = String(dateObj.getMonth() + 1).padStart(2, '0');
+                     const endD = String(dateObj.getDate()).padStart(2, '0');
+                     instLastDateFormatted = formatDateBR(`${endY}-${endM}-${endD}`);
+                 }
+                 
+                 condicoesPagamentoTexto = `O valor total de ${formatCurrency(finalDiscountedCost)} será pago da seguinte forma:
+    a) ENTRADA (Obrigatória): ${formatCurrency(parseFloat(dpValue || 0))} (equivalente a ${percEntrada}%), com vencimento para o dia ${formatDateBR(dpDate)}. Forma de pagamento: ${dpMethod}${textParcelaEntrada}.
+    b) SALDO REMANESCENTE: ${formatCurrency(parseFloat(instValue || 0) * parseInt(instCount || 1))} (equivalente a ${percParcelas}%), dividido em ${instCount} parcela(s) de ${formatCurrency(parseFloat(instValue || 0))} cada.
+    c) VENCIMENTO DAS PARCELAS: Primeiro vencimento em ${instFirstDateFormatted} e último vencimento em ${instLastDateFormatted}.
+    d) FORMA DE PAGAMENTO DAS PARCELAS: ${instMethod}.`;
+             }
+
+             // DATA DINÂMICA BASEADA NA INSTRUÇÃO DO USUÁRIO
+             const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+             const text = `CONTRATO DE LOCAÇÃO DE IMÓVEL E PRESTAÇÃO DE SERVIÇOS PARA EVENTOS
+
+IDENTIFICAÇÃO DAS PARTES
+
+LOCADOR (CONTRATADA): ROMÁRIO DOS ANJOS BOTELHO, pessoa física, inscrito no CPF sob o nº 033.312.395-69, com endereço à Av. Péricles Gusmão, nº 325, bairro Candeias, Vitória da Conquista/BA.
+
+LOCATÁRIO (CONTRATANTE): ${clientName || '[NOME DO CLIENTE]'}, inscrito(a) no CPF sob o nº ${clientCPF || '[CPF]'} e RG nº ${clientRG || '[RG]'}, residente e domiciliado(a) em ${clientAddress || '[ENDEREÇO]'}, telefone ${clientPhone || '[TELEFONE]'}.
+
+As partes acima qualificadas resolvem, de mútuo e comum acordo, celebrar o presente contrato, que se regerá pelas cláusulas a seguir:
+
+CLÁUSULA PRIMEIRA – DO OBJETO E FINALIDADE DO EVENTO
+1.1 O LOCADOR cede em locação ao LOCATÁRIO, para a finalidade exclusiva de realização de um evento do tipo ${decorationType || 'Evento'}, o imóvel "Villa dos Anjos", situado na Av. Alberto Leal, nº 45, bairro Candeias, Vitória da Conquista/BA.
+1.2 O imóvel estará disponível para uso exclusivamente no seguinte período: das ${eventTime || '[HORÁRIO DO EVENTO]'} do dia ${formatDateBR(selectedDate)}.
+1.3 O espaço será entregue limpo e em pleno funcionamento, sendo a limpeza pós-evento também de inteira responsabilidade do LOCADOR.
+
+CLÁUSULA SEGUNDA – DA ESTRUTURA DO IMÓVEL E MOBILIÁRIO
+2.1 O imóvel conta com a seguinte estrutura física e de mobiliário, devidamente inclusa na locação para uso dos convidados:
+    • Gramado com árvore, quiosque e pergolado;
+    • Salão Interno com lustres, varanda coberta e varanda parcialmente coberta;
+    • Salão de buffet com balcão expositor refrigerado;
+    • Sanitários masculino, feminino (com trocador e antessala) e unissex com acessibilidade;
+    • Copa com freezer e armários; Cozinha com geladeira e fogão industrial;
+    • Sonorização Ambiente Básica;
+    • Cadeiras de metal estofadas, mesas com tampo em MDF, banquetas, aparadores, poltronas e sofás para lounges.
+2.2 O LOCATÁRIO declara que vistoriou e aprova o estado de conservação do imóvel e dos móveis, assumindo a responsabilidade de indenizar ou reparar o LOCADOR por quaisquer danos causados à estrutura ou aos bens móveis por si ou por seus convidados durante o período locado.
+
+CLÁUSULA TERCEIRA – DOS SERVIÇOS CONTRATADOS
+3.1 Além da locação da estrutura física descrita acima, compõe o objeto deste contrato a prestação dos seguintes serviços planejados para o limite de ${guests} convidados:
+${servicosDinamicosTexto}
+
+CLÁUSULA QUARTA – DO INVESTIMENTO, FORMA DE PAGAMENTO E ADICIONAIS
+4.1 Pela locação do imóvel e pela prestação dos serviços elencados na Cláusula Terceira, o LOCATÁRIO pagará o valor total de ${formatCurrency(finalDiscountedCost)}${descontoInfo}.
+4.2 Condições e forma de pagamento acordadas entre as partes:
+    ${condicoesPagamentoTexto}
+4.3 Convidados Extras: Caso o LOCATÁRIO possua a necessidade de incluir mais convidados após a assinatura deste instrumento (e respeitando a capacidade máxima e os prazos de antecedência do LOCADOR), os valores adicionais estipulados serão:
+    • Crianças até 4 anos: Isentas (não há cobrança extra).
+    • Criança (5 a 11 anos): R$ 120,00 por convidado extra.
+    • Adolescentes (12 a 17 anos) e Adultos: R$ 220,00 por convidado extra.
+
+CLÁUSULA QUINTA – IMPREVISTOS (CASO FORTUITO OU FORÇA MAIOR)
+5.1 Caso ocorra algum evento externo à vontade do LOCADOR que impeça a disponibilização do imóvel na data acordada, este se compromete a envidar todos os esforços para solucionar ou minorar o impedimento.
+5.2 Persistindo a impossibilidade de realização do evento, caberá ao LOCATÁRIO a escolha entre:
+    a) O ressarcimento integral dos valores já pagos a título desta locação/serviços; ou
+    b) Reagendar o evento para uma data futura, com disponibilização pelo LOCADOR, hipótese em que o reagendamento ocorrerá exclusivamente às custas do LOCADOR e no prazo máximo de até 30 (trinta) dias da data originária do evento.
+
+CLÁUSULA SEXTA – DA MULTA CONTRATUAL
+6.1 O descumprimento de qualquer das disposições ora ajustadas, bem como a desistência sem justa causa, rescinde de pleno direito este contrato, obrigando a parte infratora (ou desistente) ao pagamento de uma multa equivalente a 30% do valor total do contrato em favor da parte lesada.
+
+CLÁUSULA SÉTIMA – NORMAS GERAIS DE USO E SEGURANÇA
+7.1 O LOCATÁRIO obriga-se a respeitar todas as normas públicas vigentes.
+7.2 O LOCATÁRIO está ciente da vedação legal para apresentações musicais intensas (bandas) em horário posterior às 21h30. Caso opte por som mecânico após este horário, o volume deverá obedecer rigorosamente às leis municipais do silêncio, a fim de não perturbar a vizinhança.
+7.3 É terminantemente proibido utilizar fogos de artifício, fogueiras ou qualquer atividade que envolva fogo de forma não controlada, visando resguardar a integridade física do imóvel e dos presentes.
+7.4 É proibido oferecer, vender ou permitir a ingestão de bebidas alcoólicas ou entorpecentes a menores de 18 anos. O LOCATÁRIO deve se esforçar para inibir tais práticas.
+7.5 Quaisquer necessidades de instalações elétricas extras devem ser executadas por profissional habilitado, sob responsabilidade do LOCATÁRIO, mediante aviso prévio formal ao LOCADOR.
+7.6 O LOCATÁRIO compromete-se a não obstruir, em momento algum, as vias de evacuação e saídas de emergência do imóvel, não podendo também bloquear a visibilidade e o acesso aos extintores de incêndio instalados.
+
+CLÁUSULA OITAVA – DISPOSIÇÕES FINAIS E FORO
+8.1 A tolerância de qualquer das partes quanto a eventuais atrasos ou descumprimentos parciais não constituirá novação nem implicará em renúncia ao direito de exigir o cumprimento total das condições.
+8.2 Nenhuma modificação ou alteração ao presente contrato terá validade a não ser que efetuada por escrito, mediante aditivo ou termo complementar assinado por ambas as partes.
+8.3 As partes elegem o Foro da Comarca de Vitória da Conquista/BA, renunciando expressamente a qualquer outro, por mais privilegiado que seja, para dirimir eventuais controvérsias referentes à interpretação ou execução deste instrumento.
+
+E, por estarem plenamente de acordo, justos e contratados, assinam o presente contrato em 02 (duas) vias de igual teor e forma, para que produza seus regulares efeitos de direito.
+
+Vitória da Conquista - BA, ${dataAtualExtenso}.
+
+
+_____________________________________________________
+CONTRATANTE: ${clientName || '[NOME DO CLIENTE]'}
+CPF: ${clientCPF || '[CPF]'}
+
+
+_____________________________________________________
+CONTRATADA: ROMÁRIO DOS ANJOS BOTELHO
+(Villa dos Anjos Eventos)`;
+             
+             setContractText(text);
+          };
+
+          const handleCopyContract = () => {
+             navigator.clipboard.writeText(contractText);
+             setError("✅ Texto do contrato copiado com sucesso!");
+             setTimeout(() => setError(''), 3000);
+          };
+
+          const handlePrintContract = () => {
+             const printWindow = window.open('', '_blank');
+             
+             // Identifica a área de assinaturas para mantê-la unida (evita corte no meio da assinatura)
+             let textToFormat = contractText;
+             let signatures = "";
+             const sigIndex = textToFormat.indexOf('_____________________________________________________');
+             if(sigIndex !== -1) {
+                 signatures = textToFormat.substring(sigIndex);
+                 textToFormat = textToFormat.substring(0, sigIndex);
+             }
+
+             // Formata cada parágrafo separado por duas quebras de linha
+             const formattedText = textToFormat.split('\n\n').map(p => {
+                 if(p.trim() === '') return '';
+                 const isTitle = p.includes('CONTRATO DE LOCAÇÃO') || p.includes('IDENTIFICAÇÃO DAS PARTES') || p.startsWith('CLÁUSULA');
+                 const align = isTitle ? 'center' : 'justify';
+                 const weight = isTitle ? 'bold' : 'normal';
+                 return `<div class="clause" style="text-align: ${align}; font-weight: ${weight};">${p.replace(/\n/g, '<br>')}</div>`;
+             }).join('');
+
+             const sigHtml = signatures ? `<div class="signature-block">${signatures.replace(/\n/g, '<br>')}</div>` : "";
+
+             printWindow.document.write(`
+                 <html>
+                 <head>
+                     <title>Contrato - ${clientName || 'Cliente'}</title>
+                     <style>
+                         @page { size: A4; margin: 2.5cm; }
+                         body { font-family: 'Arial', Helvetica, sans-serif; line-height: 1.5; font-size: 11pt; color: #000; }
+                         .clause { margin-bottom: 1.2em; page-break-inside: avoid; }
+                         .signature-block { page-break-inside: avoid; margin-top: 3em; text-align: center; }
+                     </style>
+                 </head>
+                 <body>
+                    ${formattedText}
+                    ${sigHtml}
+                 </body>
+                 </html>
+             `);
+             printWindow.document.close();
+             printWindow.focus();
+             setTimeout(() => { printWindow.print(); }, 500);
+          };
+
+          // =====================================================================
+          // EXPORTAR/IMPORTAR E CALENDÁRIO
+          // =====================================================================
+          const addToCalendar = () => {
+             if(!clientName || !selectedDate) {
+                 setError("Preencha o Nome e a Data para marcar na agenda.");
+                 setTimeout(() => setError(''), 3000);
+                 return;
+             }
+             const [y, m, d] = selectedDate.split('-');
+             const startDate = `${y}${m}${d}`;
+             
+             const dateObj = new Date(y, m - 1, d);
+             dateObj.setDate(dateObj.getDate() + 1);
+             const endY = dateObj.getFullYear();
+             const endM = String(dateObj.getMonth() + 1).padStart(2, '0');
+             const endD = String(dateObj.getDate()).padStart(2, '0');
+             const endDate = `${endY}${endM}${endD}`;
+
+             const title = encodeURIComponent(`Villa dos Anjos: ${decorationType} de ${clientName}`);
+             const details = encodeURIComponent(`Telefone: ${clientPhone}\nConvidados: ${guests}\nHorário: ${eventTime}`);
+             const location = encodeURIComponent(`Villa dos Anjos, Av. Alberto Leal, 45, Candeias, Vitória da Conquista - BA`);
+             
+             const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}`;
+             window.open(url, '_blank');
+          };
+
+          const applyBudgetData = (data) => {
+              if(data.clientName !== undefined) setClientName(data.clientName);
+              if(data.clientPhone !== undefined) setClientPhone(data.clientPhone);
+              if(data.guests !== undefined) setGuests(data.guests);
+              if(data.selectedDate !== undefined) setSelectedDate(data.selectedDate);
+              if(data.eventTime !== undefined) setEventTime(data.eventTime); 
+              if(data.includeServiceTax !== undefined) setIncludeServiceTax(data.includeServiceTax);
+              
+              if(data.hasDecoration !== undefined) setHasDecoration(data.hasDecoration);
+              if(data.decorationType !== undefined) setDecorationType(data.decorationType);
+              if(data.decorationLevel !== undefined) setDecorationLevel(data.decorationLevel);
+              if(data.ceremonyOnSite !== undefined) setCeremonyOnSite(data.ceremonyOnSite);
+              if(data.churchDecoration !== undefined) setChurchDecoration(data.churchDecoration);
+              
+              if(data.hasBuffet !== undefined) setHasBuffet(data.hasBuffet);
+              if(data.buffetFixedSelections !== undefined) setBuffetFixedSelections(data.buffetFixedSelections);
+              if(data.buffetVarSelections !== undefined) setBuffetVarSelections(data.buffetVarSelections);
+              if(data.hasCake !== undefined) setHasCake(data.hasCake);
+              
+              if(data.hasBeverages !== undefined) setHasBeverages(data.hasBeverages);
+              if(data.beverageSelection !== undefined) setBeverageSelection(data.beverageSelection);
+              if(data.drinkSelection !== undefined) setDrinkSelection(data.drinkSelection);
+              
+              if(data.hasServices !== undefined) setHasServices(data.hasServices);
+              if(data.servicesSelections !== undefined) setServicesSelections(data.servicesSelections);
+              
+              if(data.hasEntertainment !== undefined) setHasEntertainment(data.hasEntertainment);
+              if(data.entertainmentSelections !== undefined) setEntertainmentSelections(data.entertainmentSelections);
+              
+              if(data.clientCPF !== undefined) setClientCPF(data.clientCPF);
+              if(data.clientRG !== undefined) setClientRG(data.clientRG);
+              if(data.clientAddress !== undefined) setClientAddress(data.clientAddress);
+              if(data.hasDiscount !== undefined) setHasDiscount(data.hasDiscount);
+              if(data.discountPercent !== undefined) setDiscountPercent(data.discountPercent);
+
+              if(data.payType !== undefined) setPayType(data.payType);
+              if(data.cashDate !== undefined) setCashDate(data.cashDate);
+              if(data.dpValue !== undefined) setDpValue(data.dpValue);
+              if(data.dpDate !== undefined) setDpDate(data.dpDate);
+              if(data.dpMethod !== undefined) setDpMethod(data.dpMethod);
+              if(data.dpInstallments !== undefined) setDpInstallments(data.dpInstallments);
+              if(data.instCount !== undefined) setInstCount(data.instCount);
+              if(data.instValue !== undefined) setInstValue(data.instValue);
+              if(data.instFirstDate !== undefined) setInstFirstDate(data.instFirstDate);
+              else if (data.instDate !== undefined) setInstFirstDate(data.instDate);
+              if(data.instMethod !== undefined) setInstMethod(data.instMethod);
+
+              setError("✅ Orçamento carregado com sucesso!");
+              setTimeout(() => setError(''), 3000);
+          };
+
+          const processFile = (file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    applyBudgetData(data);
+                } catch (err) {
+                    setError("Erro ao ler o arquivo. Certifique-se de que é um arquivo JSON válido.");
+                    setTimeout(() => setError(''), 4000);
+                }
+            };
+            reader.readAsText(file);
+          };
+
+          const handleFileUpload = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            processFile(file);
+            event.target.value = null; 
+          };
+
+          const handleSaveLocal = async () => {
+            const budgetData = {
+              clientName, clientPhone, guests, selectedDate, eventTime, includeServiceTax,
+              hasDecoration, decorationType, decorationLevel, ceremonyOnSite, churchDecoration,
+              hasBuffet, buffetFixedSelections, buffetVarSelections, hasCake,
+              hasBeverages, beverageSelection, drinkSelection,
+              hasServices, servicesSelections,
+              hasEntertainment, entertainmentSelections,
+              clientCPF, clientRG, clientAddress, hasDiscount, discountPercent,
+              payType, cashDate, dpValue, dpDate, dpMethod, dpInstallments, instCount, instValue, instFirstDate, instMethod
+            };
+            
+            const jsonString = JSON.stringify(budgetData, null, 2);
+            const safeName = clientName ? clientName.replace(/\s+/g, '_') : 'Cliente';
+            const safePhone = clientPhone ? clientPhone.replace(/\D/g, '') : 'SemNumero';
+            const fileName = `Orcamento_${safeName}_${safePhone}.json`;
+            
+            try {
+              if ('showSaveFilePicker' in window) {
+                const handle = await window.showSaveFilePicker({
+                  suggestedName: fileName,
+                  types: [{ description: 'Arquivo de Orçamento JSON', accept: {'application/json': ['.json']} }],
+                });
+                const writable = await handle.createWritable();
+                await writable.write(jsonString);
+                await writable.close();
+                
+                setError("✅ Orçamento salvo com sucesso na sua máquina!");
+                setTimeout(() => setError(''), 3000);
+              } else {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", fileName);
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+                setError("✅ Orçamento baixado com sucesso!");
+                setTimeout(() => setError(''), 3000);
+              }
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                setError("Erro ao salvar o arquivo localmente.");
+                setTimeout(() => setError(''), 3000);
+              }
+            }
+          };
+
+          const handleImportLocalClick = async () => {
+            try {
+              if ('showOpenFilePicker' in window) {
+                const [fileHandle] = await window.showOpenFilePicker({
+                  types: [{ description: 'Arquivo de Orçamento JSON', accept: {'application/json': ['.json']} }],
+                  multiple: false
+                });
+                const file = await fileHandle.getFile();
+                processFile(file);
+              } else {
+                if (fileInputRef.current) fileInputRef.current.click();
+              }
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                setError("Erro ao abrir o arquivo.");
+                setTimeout(() => setError(''), 3000);
+              }
+            }
+          };
+
+          const handleSaveBudget = async () => {
+            if (!ghToken || !ghOwner || !ghRepo) {
+                setError("Configuração Pendente: Preencha o Token, Usuário e Repositório do GitHub.");
+                setGhConfigOpen(true);
+                setTimeout(() => setError(''), 4000);
+                return;
+            }
+
+            const budgetData = {
+              clientName, clientPhone, guests, selectedDate, eventTime, includeServiceTax,
+              hasDecoration, decorationType, decorationLevel, ceremonyOnSite, churchDecoration,
+              hasBuffet, buffetFixedSelections, buffetVarSelections, hasCake,
+              hasBeverages, beverageSelection, drinkSelection,
+              hasServices, servicesSelections,
+              hasEntertainment, entertainmentSelections,
+              clientCPF, clientRG, clientAddress, hasDiscount, discountPercent,
+              payType, cashDate, dpValue, dpDate, dpMethod, dpInstallments, instCount, instValue, instFirstDate, instMethod
+            };
+            
+            const jsonString = JSON.stringify(budgetData, null, 2);
+            const base64Content = window.utf8_to_b64(jsonString); // Usa a função global existente
+            
+            const safeName = clientName ? clientName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-') : 'cliente';
+            const safePhone = clientPhone ? clientPhone.replace(/\D/g, '') : 'sem-numero';
+            const fileName = `orcamento-${safeName}-${safePhone}.json`;
+            const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/orcamentos/${fileName}`;
+            
+            setIsSaving(true);
+            try {
+                // Tenta buscar o arquivo primeiro para pegar o SHA (caso esteja atualizando um existente)
+                let sha = null;
+                const getResponse = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+                if(getResponse.ok) {
+                    const getData = await getResponse.json();
+                    sha = getData.sha;
+                }
+
+                const bodyObj = {
+                    message: `Salvando orçamento: ${clientName || 'Cliente'}`,
+                    content: base64Content
+                };
+                if(sha) bodyObj.sha = sha;
+
+                const putResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${ghToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bodyObj)
+                });
+
+                if(putResponse.ok) {
+                    setError("✅ Orçamento salvo com sucesso no GitHub!");
+                } else {
+                    const erro = await putResponse.json();
+                    setError("Erro do GitHub: " + erro.message);
+                }
+            } catch (err) {
+                setError("Erro ao salvar no GitHub. Verifique a conexão.");
+            } finally {
+                setIsSaving(false);
+                setTimeout(() => setError(''), 4000);
+            }
+          };
+
+          const handleImportClick = async () => {
+            if (!ghToken || !ghOwner || !ghRepo) {
+                setError("Configuração Pendente: Preencha o Token, Usuário e Repositório do GitHub.");
+                setGhConfigOpen(true);
+                setTimeout(() => setError(''), 4000);
+                return;
+            }
+            
+            setShowImportModal(true);
+            setIsLoadingFiles(true);
+            setGithubFiles([]);
+            
+            const url = `https://api.github.com/repos/${ghOwner}/${ghRepo}/contents/orcamentos`;
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `token ${ghToken}` } });
+                if(response.ok) {
+                    const data = await response.json();
+                    const jsonFiles = data.filter(f => f.name.endsWith('.json'));
+                    setGithubFiles(jsonFiles);
+                } else if (response.status === 404) {
+                    // Pasta ainda não existe no repositório
+                    setGithubFiles([]);
+                } else {
+                    const erro = await response.json();
+                    setError("Erro ao buscar arquivos: " + erro.message);
+                    setTimeout(() => setError(''), 4000);
+                }
+            } catch (err) {
+                setError("Falha na conexão ao buscar arquivos.");
+                setTimeout(() => setError(''), 4000);
+            } finally {
+                setIsLoadingFiles(false);
+            }
+          };
+
+          const loadBudgetFromGithub = async (fileUrl) => {
+              setIsLoadingFiles(true);
+              try {
+                  const response = await fetch(fileUrl, { 
+                      headers: { 
+                          'Authorization': `token ${ghToken}`, 
+                          'Accept': 'application/vnd.github.v3.raw' 
+                      } 
+                  });
+                  if (response.ok) {
+                      const data = await response.json();
+                      applyBudgetData(data);
+                      setShowImportModal(false);
+                  } else {
+                      setError("Erro ao baixar o orçamento do repositório.");
+                      setTimeout(() => setError(''), 4000);
+                  }
+              } catch (err) {
+                  setError("Falha ao carregar o arquivo.");
+                  setTimeout(() => setError(''), 4000);
+              } finally {
+                  setIsLoadingFiles(false);
+              }
+          };
+
+          return (
+            <div className="min-h-screen bg-zinc-50 p-4 md:p-8 font-sans text-zinc-800 print:bg-white print:p-0 relative">
+              <div className="max-w-6xl mx-auto space-y-6">
+                
+                {/* Header */}
+                <header className="bg-zinc-900 rounded-3xl p-6 md:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border-b-4 border-amber-500 print:hidden">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-amber-500/20 rounded-2xl border border-amber-500/30">
+                      <i className="fa-solid fa-location-dot text-amber-500 text-3xl"></i>
+                    </div>
+                    <div>
+                      <h1 className="text-2xl md:text-4xl font-bold flex items-center gap-3">
+                        Villa dos Anjos
+                      </h1>
+                      <p className="text-amber-200/70 font-medium">Painel Integrado de Cálculos e Propostas</p>
+                    </div>
+                  </div>
+                </header>
+
+                {error && (
+                  <div className={`border-l-4 p-4 rounded-xl flex items-center gap-3 animate-pulse print:hidden z-50 fixed top-4 right-4 shadow-xl ${error.includes('✅') ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800'}`}>
+                    <i className={`fa-solid ${error.includes('✅') ? 'fa-check-circle' : 'fa-circle-exclamation'} text-xl`}></i>
+                    <p className="font-semibold pr-4">{error}</p>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 print:block">
+                  
+                  {/* Formulário Coluna Esquerda */}
+                  <div className="lg:col-span-8 space-y-6 print:hidden">
+
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200">
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-zinc-800 border-b border-zinc-100 pb-3">
+                        <i className="fa-solid fa-circle-user text-amber-500"></i> Dados do Cliente
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                        <div>
+                          <label className="block text-xs font-medium text-zinc-500 mb-1">Nome Completo</label>
+                          <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="Ex: Joana Silva" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-zinc-500 mb-1">WhatsApp (Apenas Números)</label>
+                          <input type="tel" value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} placeholder="Ex: 77999999999" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" />
+                        </div>
+                      </div>
+                      
+                      <div className="pt-4 border-t border-zinc-100">
+                          <label className="flex items-center gap-3 cursor-pointer p-3 bg-amber-50/50 border border-amber-200 rounded-xl hover:bg-amber-50 transition-colors">
+                              <input type="checkbox" checked={includeServiceTax} onChange={(e) => setIncludeServiceTax(e.target.checked)} className="w-5 h-5 accent-amber-500" />
+                              <div>
+                                  <span className="text-sm font-bold text-zinc-800 block">Aplicar 15% de Taxa de Serviço sobre o Total</span>
+                                  <span className="text-xs text-zinc-500 font-medium">Esta taxa será cobrada nos bastidores e nunca será discriminada para o cliente final.</span>
+                              </div>
+                          </label>
+                      </div>
+                    </section>
+                    
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200 grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div>
+                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-calendar-days text-amber-500"></i> Data do Evento</h2>
+                        <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-regular fa-clock text-amber-500"></i> Horário</h2>
+                        <input type="text" value={eventTime} onChange={(e) => setEventTime(e.target.value)} placeholder="Ex: 14h às 21h" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 text-center" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-users text-amber-500"></i> Qtd. Convidados</h2>
+                        <input type="number" min={MINIMUM_GUESTS} value={guests} onChange={(e) => setGuests(Math.max(MINIMUM_GUESTS, parseInt(e.target.value) || 0))} className="w-full text-xl p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 text-center font-bold" />
+                      </div>
+                    </section>
+
+                    {/* Decoração */}
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200">
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-wand-magic-sparkles text-amber-500"></i> Serviço de Decoração</h2>
+                      <div className="flex gap-4 mb-4">
+                        <button onClick={() => setHasDecoration(false)} className={`flex-1 p-3 rounded-xl border transition-all ${!hasDecoration ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Sem Decoração</button>
+                        <button onClick={() => setHasDecoration(true)} className={`flex-1 p-3 rounded-xl border transition-all ${hasDecoration ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Incluir Decoração</button>
+                      </div>
+                      {hasDecoration && (
+                        <div className="space-y-4 pt-4 border-t">
+                          <label className="block text-sm font-medium text-zinc-500">Tipo de Celebração</label>
+                          <select value={decorationType} onChange={(e) => setDecorationType(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl">
+                            {DECORATION_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                          </select>
+                          <label className="block text-sm font-medium text-zinc-500">Padrão da Decoração</label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {DECORATION_LEVELS.map(l => (
+                              <button key={l} onClick={() => setDecorationLevel(l)} className={`p-2 text-sm rounded-lg border transition-all ${decorationLevel === l ? 'bg-amber-50 border-amber-500 font-bold' : 'bg-zinc-50'}`}>{l}</button>
+                            ))}
+                          </div>
+                          
+                          <div className="pt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-zinc-500 mb-1">Cerimônia no Local?</label>
+                              <select value={ceremonyOnSite ? "Sim" : "Não"} onChange={(e) => setCeremonyOnSite(e.target.value === "Sim")} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl">
+                                <option value="Não">Não</option>
+                                <option value="Sim">Sim</option>
+                              </select>
+                            </div>
+                            {decorationType === 'Casamento' && (
+                              <div>
+                                <label className="block text-sm font-medium text-zinc-500 mb-1">Decoração da Igreja</label>
+                                <select value={churchDecoration} onChange={(e) => setChurchDecoration(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl">
+                                  {Object.keys(CHURCH_DECORATION_COSTS).map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
+                                </select>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* Buffet */}
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200">
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-utensils text-amber-500"></i> Buffet e Gastronomia</h2>
+                      <div className="flex gap-4 mb-4">
+                        <button onClick={() => setHasBuffet(false)} className={`flex-1 p-3 rounded-xl border transition-all ${!hasBuffet ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Sem Buffet</button>
+                        <button onClick={() => setHasBuffet(true)} className={`flex-1 p-3 rounded-xl border transition-all ${hasBuffet ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Incluir Buffet</button>
+                      </div>
+                      {hasBuffet && (
+                        <div className="space-y-6 pt-4 border-t">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <h3 className="col-span-full text-xs font-bold text-zinc-400 uppercase tracking-wider">Itens Fixos / Mesa</h3>
+                            {BUFFET_FIXED.map(item => (
+                              <label key={item.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${buffetFixedSelections[item.id] ? 'bg-amber-50 border-amber-300' : 'bg-zinc-50 border-zinc-200'}`}>
+                                <input type="checkbox" checked={!!buffetFixedSelections[item.id]} onChange={() => setBuffetFixedSelections(prev => ({...prev, [item.id]: !prev[item.id]}))} className="w-5 h-5 accent-amber-500" />
+                                <span className="text-sm font-medium">{item.label}</span>
+                              </label>
+                            ))}
+                            <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${hasCake ? 'bg-amber-50 border-amber-300' : 'bg-zinc-50 border-zinc-200'}`}>
+                                <input type="checkbox" checked={hasCake} onChange={() => setHasCake(!hasCake)} className="w-5 h-5 accent-amber-500" />
+                                <span className="text-sm font-medium">Bolo Villa dos Anjos</span>
+                            </label>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 gap-3">
+                            <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Itens Variáveis (Por Convidado)</h3>
+                            {BUFFET_VARIABLE.map(item => {
+                              const sel = buffetVarSelections[item.id];
+                              return (
+                                <div key={item.id} className={`flex items-center justify-between p-3 rounded-xl border transition-all ${sel?.selected ? 'bg-amber-50 border-amber-300' : 'bg-zinc-50 border-zinc-200'}`}>
+                                  <label className="flex items-center gap-3 cursor-pointer flex-1">
+                                    <input type="checkbox" checked={!!sel?.selected} onChange={() => setBuffetVarSelections(prev => ({...prev, [item.id]: {selected: !prev[item.id]?.selected, qty: prev[item.id]?.qty || 1}}))} className="w-5 h-5 accent-amber-500" />
+                                    <span className="text-sm font-medium">{item.label}</span>
+                                  </label>
+                                  {sel?.selected && (
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-[10px] text-zinc-400 font-bold">QTD:</span>
+                                      <input type="number" min="1" value={sel.qty} onChange={(e) => setBuffetVarSelections(prev => ({...prev, [item.id]: {...prev[item.id], qty: parseInt(e.target.value) || 1}}))} className="w-12 p-1 text-center border rounded-lg bg-white" />
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* Bebidas */}
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200">
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-wine-glass text-amber-500"></i> Bebidas e Coquetelaria</h2>
+                      <div className="flex gap-4 mb-4">
+                        <button onClick={() => setHasBeverages(false)} className={`flex-1 p-3 rounded-xl border transition-all ${!hasBeverages ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Sem Bebidas</button>
+                        <button onClick={() => setHasBeverages(true)} className={`flex-1 p-3 rounded-xl border transition-all ${hasBeverages ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Incluir Bebidas</button>
+                      </div>
+                      {hasBeverages && (
+                        <div className="space-y-4 pt-4 border-t">
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-500 mb-2">Plano de Bebidas</label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                              {BEVERAGE_TYPES.map(b => (
+                                <button key={b.id} onClick={() => setBeverageSelection(b.id)} className={`p-2 text-xs rounded-lg border transition-all ${beverageSelection === b.id ? 'bg-amber-50 border-amber-500 font-bold' : 'bg-zinc-50'}`}>{b.label}</button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-500 mb-2">Bar de Drinks</label>
+                            <select value={drinkSelection} onChange={(e) => setDrinkSelection(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl">
+                              {DRINK_TYPES.map(d => <option key={d.id} value={d.id}>{d.label}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                      )}
+                    </section>
+
+                    {/* Equipe / Serviços */}
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200">
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-user-group text-amber-500"></i> Equipe Adicional</h2>
+                      <div className="flex gap-4 mb-4">
+                        <button onClick={() => setHasServices(false)} className={`flex-1 p-3 rounded-xl border transition-all ${!hasServices ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Equipe Padrão</button>
+                        <button onClick={() => setHasServices(true)} className={`flex-1 p-3 rounded-xl border transition-all ${hasServices ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Adicionar Profissionais</button>
+                      </div>
+                      {hasServices && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4 border-t">
+                          {SERVICES_OPTIONS.map(item => {
+                            const sel = servicesSelections[item.id];
+                            return (
+                              <div key={item.id} className={`flex items-center justify-between p-3 rounded-xl border transition-all ${sel?.selected ? 'bg-amber-50 border-amber-300' : 'bg-zinc-50 border-zinc-200'}`}>
+                                <label className="flex items-center gap-3 cursor-pointer flex-1">
+                                  <input type="checkbox" checked={!!sel?.selected} onChange={() => setServicesSelections(prev => ({...prev, [item.id]: {selected: !prev[item.id]?.selected, qty: prev[item.id]?.qty || 1}}))} className="w-5 h-5 accent-amber-500" />
+                                  <span className="text-sm font-medium">{item.label}</span>
+                                </label>
+                                {sel?.selected && (
+                                  <input type="number" min="1" value={sel.qty} onChange={(e) => setServicesSelections(prev => ({...prev, [item.id]: {...prev[item.id], qty: parseInt(e.target.value) || 1}}))} className="w-12 p-1 text-center border rounded-lg bg-white" />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </section>
+
+                    {/* Entretenimento */}
+                    <section className="bg-white rounded-2xl p-6 shadow-sm border border-zinc-200">
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><i className="fa-solid fa-music text-amber-500"></i> Som e Entretenimento</h2>
+                      <div className="flex gap-4 mb-4">
+                        <button onClick={() => setHasEntertainment(false)} className={`flex-1 p-3 rounded-xl border transition-all ${!hasEntertainment ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Sem Atrações</button>
+                        <button onClick={() => setHasEntertainment(true)} className={`flex-1 p-3 rounded-xl border transition-all ${hasEntertainment ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-zinc-50 border-zinc-200'}`}>Escolher Atrações</button>
+                      </div>
+                      {hasEntertainment && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4 border-t">
+                          {ENTERTAINMENT_OPTIONS.map(item => (
+                            <label key={item.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${entertainmentSelections[item.id] ? 'bg-amber-50 border-amber-300' : 'bg-zinc-50 border-zinc-200'}`}>
+                              <input type="checkbox" checked={!!entertainmentSelections[item.id]} onChange={() => setEntertainmentSelections(prev => ({...prev, [item.id]: !prev[item.id]}))} className="w-5 h-5 accent-amber-500" />
+                              <span className="text-sm font-medium">{item.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </section>
+
+                  </div>
+
+                  {/* Resumo Coluna Direita (Visão Admin) */}
+                  <div className="lg:col-span-4 print:col-span-12">
+                    <div className="bg-white rounded-2xl shadow-xl border border-zinc-200 p-6 sticky top-6 print:shadow-none print:border-none print:p-0">
+                      
+                      {/* Cabelhaço Impressão */}
+                      <div className="hidden print:block text-center mb-8 border-b-2 border-zinc-200 pb-6">
+                        <h1 className="text-3xl font-bold uppercase tracking-widest text-zinc-900 mb-2">Villa dos Anjos</h1>
+                        <p className="text-zinc-500">Proposta de Orçamento</p>
+                      </div>
+
+                      <h2 className="text-xl font-bold mb-4 pb-4 border-b text-zinc-800 flex items-center justify-between print:hidden">
+                        Resumo da Proposta
+                        <i className="fa-solid fa-file-invoice text-amber-500"></i>
+                      </h2>
+
+                      <div className="space-y-4">
+                        {clientName && <div className="flex justify-between text-sm"><span className="text-zinc-500">Cliente:</span> <span className="font-bold text-right">{clientName}</span></div>}
+                        <div className="flex justify-between text-sm"><span className="text-zinc-500">Data do Evento:</span> <span className="font-bold">{formatDateBR(selectedDate)}</span></div>
+                        <div className="flex justify-between text-sm"><span className="text-zinc-500">Horário:</span> <span className="font-bold">{eventTime}</span></div>
+                        <div className="flex justify-between text-sm"><span className="text-zinc-500">Convidados:</span> <span className="font-bold">{guests} pessoas</span></div>
+                        
+                        <div className="pt-4 border-t">
+                          <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">Itens Inclusos</h3>
+                          <div className="space-y-2">
+                            {hasDecoration ? <p className="text-sm flex items-center gap-2 font-medium"><i className="fa-solid fa-check text-green-500"></i> Decoração {decorationType}</p> : <p className="text-sm text-zinc-400 italic">Nenhuma decoração</p>}
+                            {ceremonyOnSite && <p className="text-sm flex items-center gap-2 font-medium"><i className="fa-solid fa-check text-green-500"></i> Cerimônia no Local</p>}
+                            {hasBuffet ? <p className="text-sm flex items-center gap-2 font-medium"><i className="fa-solid fa-check text-green-500"></i> Buffet ({buffetItemsList.length} itens)</p> : <p className="text-sm text-zinc-400 italic">Buffet por conta do cliente</p>}
+                            {hasBeverages && <p className="text-sm flex items-center gap-2 font-medium"><i className="fa-solid fa-check text-green-500"></i> Bebidas Inclusas</p>}
+                            {servicesItemsList.length > 0 && <p className="text-sm flex items-center gap-2 font-medium"><i className="fa-solid fa-check text-green-500"></i> {servicesItemsList.length} Profissionais Adicionais</p>}
+                            {entItemsList.length > 0 && <p className="text-sm flex items-center gap-2 font-medium"><i className="fa-solid fa-check text-green-500"></i> Som/Entretenimento</p>}
+                          </div>
+                        </div>
+
+                        {/* Bloco de Valor */}
+                        <div className="mt-8 p-5 bg-zinc-900 rounded-2xl text-white relative overflow-hidden print:bg-zinc-100 print:text-zinc-900 print:border print:border-zinc-300">
+                          <div className="absolute top-0 right-0 p-2 opacity-10 print:hidden"><i className="fa-solid fa-calculator text-5xl"></i></div>
+                          <p className="text-xs text-amber-500 font-bold uppercase mb-1 print:text-zinc-500">Investimento Total</p>
+                          <p className="text-4xl font-black">{formatCurrency(totalCost)}</p>
+                          
+                          <div className="mt-4 pt-4 border-t border-zinc-800 print:border-zinc-300 text-[10px] text-zinc-400 print:text-zinc-600 flex justify-between">
+                              <span>TAXA: {includeServiceTax ? '15% INCLUSO' : 'LÍQUIDO'}</span>
+                              <span className="uppercase">{ruleName}</span>
+                          </div>
+                        </div>
+                        
+                        {(hasDiscount && discountPercent > 0) && (
+                            <div className="bg-green-50 border border-green-200 p-3 rounded-xl">
+                                <p className="text-xs text-green-700 font-bold uppercase mb-1">Com Desconto ({discountPercent}%)</p>
+                                <p className="text-lg font-bold text-green-900">{formatCurrency(finalDiscountedCost)}</p>
+                            </div>
+                        )}
+                      </div>
+
+                      {/* AREA DE INTEGRAÇÃO GITHUB */}
+                      <div className="mt-6 pt-4 border-t border-zinc-100 print:hidden">
+                        <div className="flex justify-between items-center mb-3">
+                            <h3 className="text-sm font-bold text-zinc-800">Proposta Online VIP</h3>
+                            <button onClick={() => setGhConfigOpen(!ghConfigOpen)} className="text-xs text-blue-600 hover:underline">
+                                <i className="fa-solid fa-gear"></i> Configurar
+                            </button>
+                        </div>
+
+                        {ghConfigOpen && (
+                            <div className="mb-4 p-4 bg-blue-50 border border-blue-100 rounded-xl space-y-3">
+                                <div>
+                                    <label className="block text-xs font-semibold text-zinc-700 mb-1">GitHub Token</label>
+                                    <input type="password" value={ghToken} onChange={(e) => setGhToken(e.target.value)} placeholder="ghp_..." className="w-full p-2 text-xs border rounded-lg" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-zinc-700 mb-1">Utilizador</label>
+                                        <input type="text" value={ghOwner} onChange={(e) => setGhOwner(e.target.value)} placeholder="Ex: villadosanjos" className="w-full p-2 text-xs border rounded-lg" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-zinc-700 mb-1">Repositório</label>
+                                        <input type="text" value={ghRepo} onChange={(e) => setGhRepo(e.target.value)} placeholder="Ex: propostas" className="w-full p-2 text-xs border rounded-lg" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <button 
+                            onClick={handlePublishGitHub} 
+                            disabled={isPublishing}
+                            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+                        >
+                            {isPublishing ? (
+                                <><span className="loader border-white border-t-amber-200"></span> Gerando Link...</>
+                            ) : (
+                                <><i className="fa-solid fa-globe"></i> Gerar Link VIP (GitHub)</>
+                            )}
+                        </button>
+
+                        {publishedLink && (
+                            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                                <p className="text-xs text-green-800 font-bold mb-2 flex items-center gap-1">
+                                    <i className="fa-solid fa-check-circle"></i> Publicado! (Aguarde 1 min se der erro)
+                                </p>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <input type="text" readOnly value={publishedLink} className="w-full text-xs p-2 border border-green-300 rounded outline-none bg-white text-zinc-600" />
+                                    <button onClick={copiarLink} className="bg-green-600 text-white px-3 py-2 rounded text-xs font-bold hover:bg-green-700"><i className="fa-regular fa-copy"></i></button>
+                                </div>
+                                <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Olá ${clientName}! Preparamos uma proposta exclusiva para o seu grande dia. Pode conferir todos os detalhes aqui: ${publishedLink}`)}`} target="_blank" className="block text-center bg-[#25D366] text-white py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-[#20bd5a]">
+                                    <i className="fa-brands fa-whatsapp"></i> Enviar no WhatsApp
+                                </a>
+                            </div>
+                        )}
+                      </div>
+
+                      {/* AREA DE CONTRATO */}
+                      <div className="mt-6 pt-4 border-t border-zinc-100 print:hidden">
+                          <h3 className="text-sm font-bold text-zinc-800 mb-3">Documentação Oficial</h3>
+                          <button
+                              onClick={() => {
+                                  setShowContractModal(true);
+                                  handleGenerateContract();
+                              }}
+                              className="w-full bg-zinc-800 hover:bg-black text-white font-bold py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+                          >
+                              <i className="fa-solid fa-file-signature"></i> Complementar Informações
+                          </button>
+                      </div>
+
+                      {/* Botões Administrativos */}
+                      <div className="mt-4 pt-4 border-t border-zinc-100 space-y-3 print:hidden">
+                        
+                        <button onClick={addToCalendar} className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-regular fa-calendar-plus"></i> Marcar Evento na Agenda
+                        </button>
+                        
+                        <button onClick={() => window.print()} className="w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                          <i className="fa-solid fa-print"></i> Imprimir Rascunho
+                        </button>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <button onClick={handleSaveLocal} className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-solid fa-download"></i> Salvar (PC)
+                          </button>
+                          <button onClick={handleImportLocalClick} className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-solid fa-upload"></i> Importar (PC)
+                          </button>
+
+                          <button onClick={handleSaveBudget} disabled={isSaving} className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            {isSaving ? <span className="loader border-blue-700 border-t-transparent w-4 h-4"></span> : <i className="fa-solid fa-cloud-arrow-up"></i>} Salvar Nuvem
+                          </button>
+                          <button onClick={handleImportClick} className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <i className="fa-solid fa-cloud-arrow-down"></i> Importar Nuvem
+                          </button>
+                        </div>
+                        <input type="file" accept=".json" ref={fileInputRef} onChange={handleFileUpload} style={{ display: 'none' }} />
+                      </div>
+                      
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* MODAL DE IMPORTAÇÃO DO GITHUB */}
+              {showImportModal && (
+                  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden">
+                      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl">
+                          <div className="flex justify-between items-center p-6 border-b border-zinc-200">
+                              <h2 className="text-xl font-bold text-zinc-800 flex items-center gap-2">
+                                  <i className="fa-solid fa-cloud text-amber-500"></i>
+                                  Orçamentos Salvos (GitHub)
+                              </h2>
+                              <button onClick={() => setShowImportModal(false)} className="text-zinc-400 hover:text-red-500 transition-colors">
+                                  <i className="fa-solid fa-xmark text-2xl"></i>
+                              </button>
+                          </div>
+                          
+                          <div className="p-6 overflow-y-auto flex-1">
+                              {isLoadingFiles ? (
+                                  <div className="text-center py-10">
+                                      <span className="loader border-zinc-300 border-t-amber-500 w-10 h-10 border-4"></span>
+                                      <p className="mt-4 text-zinc-500 font-medium">Buscando orçamentos...</p>
+                                  </div>
+                              ) : githubFiles.length === 0 ? (
+                                  <div className="text-center py-10 bg-zinc-50 rounded-xl border border-zinc-200">
+                                      <i className="fa-regular fa-folder-open text-4xl text-zinc-300 mb-3"></i>
+                                      <p className="text-zinc-500 font-medium">Nenhum orçamento encontrado.</p>
+                                      <p className="text-xs text-zinc-400 mt-1">Salve um orçamento para que ele apareça aqui.</p>
+                                  </div>
+                              ) : (
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                      {githubFiles.map((file) => (
+                                          <div key={file.sha} className="border border-zinc-200 rounded-xl p-4 hover:border-amber-400 hover:bg-amber-50 transition-colors flex flex-col justify-between group">
+                                              <div className="mb-4">
+                                                  <h3 className="font-bold text-zinc-700 text-sm break-all">
+                                                      <i className="fa-regular fa-file-lines text-amber-500 mr-2"></i>
+                                                      {file.name.replace('orcamento-', '').replace('.json', '').replaceAll('-', ' ').toUpperCase()}
+                                                  </h3>
+                                                  <p className="text-xs text-zinc-400 mt-1">{file.name}</p>
+                                              </div>
+                                              <button 
+                                                  onClick={() => loadBudgetFromGithub(file.url)}
+                                                  className="w-full bg-zinc-800 text-white text-xs font-bold py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                              >
+                                                  Carregar Dados
+                                              </button>
+                                          </div>
+                                      ))}
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {/* MODAL DO CONTRATO E PAGAMENTO */}
+              {showContractModal && (
+                  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden">
+                      <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[95vh] flex flex-col shadow-2xl">
+                          
+                          <div className="flex justify-between items-center p-6 border-b border-zinc-200">
+                              <h2 className="text-2xl font-bold font-serif text-zinc-800 flex items-center gap-2">
+                                  <i className="fa-solid fa-file-contract text-amber-500"></i>
+                                  Configuração do Contrato
+                              </h2>
+                              <button onClick={() => setShowContractModal(false)} className="text-zinc-400 hover:text-red-500 transition-colors">
+                                  <i className="fa-solid fa-xmark text-2xl"></i>
+                              </button>
+                          </div>
+
+                          <div className="p-6 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-8">
+                              
+                              {/* Formulário de Configuração (Esquerda) */}
+                              <div className="space-y-6">
+                                  
+                                  {/* Dados Contratante */}
+                                  <div>
+                                      <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest border-b pb-2 mb-4">Dados do Contratante</h3>
+                                      <div className="space-y-4">
+                                          <div>
+                                              <label className="block text-sm font-medium text-zinc-700 mb-1">Nome Completo</label>
+                                              <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl outline-none" />
+                                          </div>
+                                          <div className="grid grid-cols-2 gap-3">
+                                              <div>
+                                                  <label className="block text-sm font-medium text-zinc-700 mb-1">CPF</label>
+                                                  <input type="text" value={clientCPF} onChange={(e) => setClientCPF(e.target.value)} placeholder="000.000.000-00" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" />
+                                              </div>
+                                              <div>
+                                                  <label className="block text-sm font-medium text-zinc-700 mb-1">RG</label>
+                                                  <input type="text" value={clientRG} onChange={(e) => setClientRG(e.target.value)} placeholder="00.000.000-0" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" />
+                                              </div>
+                                          </div>
+                                          <div>
+                                              <label className="block text-sm font-medium text-zinc-700 mb-1">Endereço Completo</label>
+                                              <input type="text" value={clientAddress} onChange={(e) => setClientAddress(e.target.value)} placeholder="Rua, Número, Bairro, Cidade - Estado" className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" />
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  {/* Desconto */}
+                                  <div>
+                                      <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest border-b pb-2 mb-4">Desconto Exclusivo</h3>
+                                      <div className="flex items-center gap-3 p-3 bg-zinc-50 border border-zinc-200 rounded-xl mb-3">
+                                          <input type="checkbox" checked={hasDiscount} onChange={(e) => setHasDiscount(e.target.checked)} className="w-5 h-5 accent-amber-500" />
+                                          <span className="text-sm font-medium text-zinc-700">Conceder Desconto?</span>
+                                      </div>
+                                      {hasDiscount && (
+                                          <div>
+                                              <label className="block text-xs font-medium text-zinc-500 mb-1">Porcentagem (%)</label>
+                                              <input type="number" min="1" max="100" value={discountPercent} onChange={(e) => setDiscountPercent(e.target.value)} className="w-full p-3 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none" />
+                                          </div>
+                                      )}
+                                  </div>
+
+                                  {/* Condições Estruturadas de Pagamento */}
+                                  <div>
+                                      <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest border-b pb-2 mb-4">Condições de Pagamento</h3>
+                                      
+                                      <div className="flex gap-4 mb-4">
+                                          <button onClick={() => setPayType('avista')} className={`flex-1 p-2 rounded-xl border font-bold text-sm transition-all ${payType === 'avista' ? 'bg-amber-50 border-amber-500 text-amber-700' : 'bg-zinc-50 border-zinc-200 text-zinc-600'}`}>À Vista</button>
+                                          <button onClick={() => setPayType('parcelado')} className={`flex-1 p-2 rounded-xl border font-bold text-sm transition-all ${payType === 'parcelado' ? 'bg-amber-50 border-amber-500 text-amber-700' : 'bg-zinc-50 border-zinc-200 text-zinc-600'}`}>Parcelado</button>
+                                      </div>
+
+                                      {payType === 'avista' && (
+                                          <div className="p-4 border border-zinc-200 rounded-xl bg-zinc-50">
+                                              <label className="block text-sm font-medium text-zinc-700 mb-1">Data do Pagamento</label>
+                                              <input type="date" value={cashDate} onChange={e => setCashDate(e.target.value)} className="w-full p-3 bg-white border border-zinc-200 rounded-lg outline-none" />
+                                          </div>
+                                      )}
+
+                                      {payType === 'parcelado' && (
+                                          <div className="space-y-4">
+                                              {/* Entrada */}
+                                              <div className="p-4 border border-zinc-200 rounded-xl bg-zinc-50 space-y-3">
+                                                  <h4 className="font-bold text-sm text-zinc-700">1. Entrada (Obrigatória)</h4>
+                                                  <div className="grid grid-cols-2 gap-3">
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">Valor (R$)</label>
+                                                          <div className="relative">
+                                                              <input type="number" value={dpValue} onChange={e => setDpValue(e.target.value)} className="w-full p-2 pl-2 pr-12 border rounded-lg outline-none bg-white" />
+                                                              <span className="absolute right-2 top-2 text-xs text-zinc-400 font-bold">{getPerc(dpValue)}%</span>
+                                                          </div>
+                                                      </div>
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">Data</label>
+                                                          <input type="date" value={dpDate} onChange={e => setDpDate(e.target.value)} className="w-full p-2 border rounded-lg outline-none bg-white" />
+                                                      </div>
+                                                  </div>
+                                                  <div>
+                                                      <label className="block text-xs font-medium text-zinc-500 mb-1">Forma de Pagamento</label>
+                                                      <select value={dpMethod} onChange={e => setDpMethod(e.target.value)} className="w-full p-2 border rounded-lg outline-none bg-white">
+                                                          <option value="PIX">PIX</option>
+                                                          <option value="Dinheiro">Dinheiro</option>
+                                                          <option value="Cartão de Débito">Cartão de Débito</option>
+                                                          <option value="Cartão de Crédito">Cartão de Crédito (1x)</option>
+                                                          <option value="Cartão Parcelado">Cartão Parcelado</option>
+                                                      </select>
+                                                  </div>
+                                                  {dpMethod === 'Cartão Parcelado' && (
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">Parcelar entrada em (vezes):</label>
+                                                          <input type="number" min="2" value={dpInstallments} onChange={e => setDpInstallments(e.target.value)} className="w-full p-2 border rounded-lg outline-none bg-white" />
+                                                      </div>
+                                                  )}
+                                              </div>
+
+                                              {/* Saldo/Parcelas */}
+                                              <div className="p-4 border border-zinc-200 rounded-xl bg-zinc-50 space-y-3">
+                                                  <h4 className="font-bold text-sm text-zinc-700">2. Parcelamento do Saldo</h4>
+                                                  <div className="grid grid-cols-2 gap-3">
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">Qtd. de Parcelas</label>
+                                                          <input type="number" min="1" value={instCount} onChange={e => setInstCount(e.target.value)} className="w-full p-2 border rounded-lg outline-none bg-white" />
+                                                      </div>
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">Valor de CADA (R$)</label>
+                                                          <div className="relative">
+                                                              <input type="number" value={instValue} onChange={e => setInstValue(e.target.value)} className="w-full p-2 pl-2 pr-12 border rounded-lg outline-none bg-white" />
+                                                              <span className="absolute right-2 top-2 text-xs text-zinc-400 font-bold">{getPerc(instValue * instCount)}%</span>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  <div className="flex justify-end">
+                                                      <button type="button" onClick={() => {
+                                                          const remaining = finalDiscountedCost - parseFloat(dpValue || 0);
+                                                          const suggested = remaining > 0 ? (remaining / parseInt(instCount || 1)) : 0;
+                                                          setInstValue(suggested.toFixed(2));
+                                                      }} className="text-[11px] text-amber-600 font-bold hover:underline">
+                                                          Autocalcular Parcela
+                                                      </button>
+                                                  </div>
+                                                  <div className="grid grid-cols-2 gap-3">
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">1º Vencimento</label>
+                                                          <input type="date" value={instFirstDate} onChange={e => setInstFirstDate(e.target.value)} className="w-full p-2 border rounded-lg outline-none bg-white" />
+                                                      </div>
+                                                      <div>
+                                                          <label className="block text-xs font-medium text-zinc-500 mb-1">Forma de Pagto</label>
+                                                          <select value={instMethod} onChange={e => setInstMethod(e.target.value)} className="w-full p-2 border rounded-lg outline-none bg-white">
+                                                              <option value="PIX">PIX</option>
+                                                              <option value="Boleto">Boleto Bancário</option>
+                                                              <option value="Cartão de Crédito">Cartão Recorrente</option>
+                                                              <option value="Transferência">Transferência</option>
+                                                          </select>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              {/* Validação */}
+                                              <div className={`p-3 rounded-lg flex items-center justify-between border ${isPagamentoValido ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                                                  <span className="text-xs font-bold uppercase tracking-wider">
+                                                      {isPagamentoValido ? '✅ Soma Correta' : '⚠️ Erro na Soma'}
+                                                  </span>
+                                                  <span className="text-sm font-bold">{formatCurrency(totalCalculado)} / {formatCurrency(finalDiscountedCost)}</span>
+                                              </div>
+                                          </div>
+                                      )}
+                                  </div>
+
+                                  <div className="space-y-3 mt-6">
+                                      <button 
+                                          onClick={handleGenerateContract}
+                                          className="w-full bg-zinc-800 hover:bg-black text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+                                      >
+                                          <i className="fa-solid fa-arrows-rotate"></i> Atualizar Texto do Contrato
+                                      </button>
+                                      
+                                      <div className="grid grid-cols-2 gap-3">
+                                          <button 
+                                              onClick={handleSaveLocal}
+                                              className="w-full bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                                          >
+                                              <i className="fa-solid fa-download"></i> Salvar Info (PC)
+                                          </button>
+                                          
+                                          <button 
+                                              onClick={handleSaveBudget}
+                                              disabled={isSaving}
+                                              className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                                          >
+                                              {isSaving ? <span className="loader border-blue-700 border-t-transparent w-4 h-4"></span> : <i className="fa-solid fa-cloud-arrow-up"></i>} Salvar Info (Nuvem)
+                                          </button>
+
+                                          <button 
+                                              onClick={handlePrintContract}
+                                              className="col-span-2 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm"
+                                          >
+                                              <i className="fa-solid fa-print"></i> Imprimir Contrato (PDF)
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              {/* Visualização do Contrato (Direita) */}
+                              <div className="flex flex-col h-full">
+                                  <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest border-b pb-2 mb-4 flex justify-between items-center">
+                                      Visualização e Edição Rápida
+                                      <button onClick={handleCopyContract} className="text-amber-600 hover:text-amber-800 text-xs flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-md transition-colors">
+                                          <i className="fa-regular fa-copy"></i> Copiar Tudo
+                                      </button>
+                                  </h3>
+                                  <div className="contract-box flex-1 outline-none shadow-inner" contentEditable suppressContentEditableWarning onBlur={(e) => setContractText(e.target.innerText)}>
+                                      {contractText}
+                                  </div>
+                              </div>
+
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
