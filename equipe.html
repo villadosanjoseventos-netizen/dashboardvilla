@@ -12,6 +12,33 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Personalização da barra de rolagem do box de funções */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f4f4f5; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d4d4d8; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa; 
+        }
+        .loader {
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body class="bg-zinc-50 font-sans text-zinc-800">
     <div id="root"></div>
@@ -28,20 +55,13 @@
             'Gráfica', 'Brindes', 'Gelo', 'Frutas'
         ].sort(); // Organizado em ordem alfabética para facilitar
 
+        // Helper para Base64 com acentos
+        const utf8_to_b64 = (str) => window.btoa(unescape(encodeURIComponent(str)));
+
         function App() {
             const [isAuthenticated, setIsAuthenticated] = useState(true);
-
-            // Autenticação básica (verifica se logou no index.html)
-            useEffect(() => {
-                if (localStorage.getItem('villa_dashboard_auth') !== 'true') {
-                    setIsAuthenticated(false);
-                    try {
-                        window.location.href = 'index.html';
-                    } catch (error) {
-                        console.warn("Ambiente de visualização bloqueou o redirecionamento automático.", error);
-                    }
-                }
-            }, []);
+            const [isSyncing, setIsSyncing] = useState(false);
+            const [syncMessage, setSyncMessage] = useState('');
 
             // Estado principal: Lista de Membros
             const [members, setMembers] = useState(() => {
@@ -59,10 +79,108 @@
             // Estado de Busca/Filtro
             const [searchTerm, setSearchTerm] = useState('');
 
+            // Autenticação básica (verifica se logou no index.html)
+            useEffect(() => {
+                if (localStorage.getItem('villa_dashboard_auth') !== 'true') {
+                    setIsAuthenticated(false);
+                    try {
+                        window.location.href = 'index.html';
+                    } catch (error) {
+                        console.warn("Ambiente de visualização bloqueou o redirecionamento automático.", error);
+                    }
+                } else {
+                    loadEquipeFromCloud();
+                }
+            }, []);
+
             // Salva no localStorage sempre que a lista de membros mudar
             useEffect(() => {
                 localStorage.setItem('villa_equipe_members', JSON.stringify(members));
             }, [members]);
+
+            // ==========================================
+            // INTEGRAÇÃO GITHUB (NUVEM)
+            // ==========================================
+            const loadEquipeFromCloud = async () => {
+                const token = localStorage.getItem('ghToken');
+                const owner = localStorage.getItem('ghOwner');
+                const repo = localStorage.getItem('ghRepo');
+
+                if (!token || !owner || !repo) return;
+
+                setIsSyncing(true);
+                try {
+                    const url = `https://api.github.com/repos/${owner}/${repo}/contents/dados/equipe.json`;
+                    const res = await fetch(url, { headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3.raw' } });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        setMembers(data);
+                        setSyncMessage('Dados carregados da nuvem.');
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar equipe da nuvem", e);
+                } finally {
+                    setIsSyncing(false);
+                    setTimeout(() => setSyncMessage(''), 3000);
+                }
+            };
+
+            const saveEquipeToCloud = async () => {
+                const token = localStorage.getItem('ghToken');
+                const owner = localStorage.getItem('ghOwner');
+                const repo = localStorage.getItem('ghRepo');
+
+                if (!token || !owner || !repo) {
+                    alert("Configuração do GitHub ausente. Por favor, acesse o módulo de Orçamentos e configure a Integração VIP primeiro.");
+                    return;
+                }
+
+                setIsSyncing(true);
+                setSyncMessage('Salvando na nuvem...');
+
+                try {
+                    const url = `https://api.github.com/repos/${owner}/${repo}/contents/dados/equipe.json`;
+                    
+                    // Pega o SHA se o arquivo já existir
+                    let sha = null;
+                    const getRes = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+                    if (getRes.ok) {
+                        const data = await getRes.json();
+                        sha = data.sha;
+                    }
+
+                    const jsonString = JSON.stringify(members, null, 2);
+                    const base64Content = utf8_to_b64(jsonString);
+                    
+                    const bodyObj = {
+                        message: `Atualizando base de dados da equipe`,
+                        content: base64Content
+                    };
+                    if (sha) bodyObj.sha = sha;
+
+                    const putRes = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(bodyObj)
+                    });
+
+                    if (putRes.ok) {
+                        setSyncMessage('✅ Nuvem Atualizada!');
+                    } else {
+                        const errData = await putRes.json();
+                        setSyncMessage('❌ Erro ao salvar: ' + errData.message);
+                    }
+                } catch (e) {
+                    setSyncMessage('❌ Erro de conexão.');
+                } finally {
+                    setIsSyncing(false);
+                    setTimeout(() => setSyncMessage(''), 4000);
+                }
+            };
 
             // Funções de manipulação do formulário
             const toggleRole = (role) => {
@@ -87,13 +205,19 @@
                     updatedAt: new Date().toISOString()
                 };
 
+                let updatedMembers;
                 if (editingId) {
-                    setMembers(members.map(m => m.id === editingId ? newMember : m));
+                    updatedMembers = members.map(m => m.id === editingId ? newMember : m);
                 } else {
-                    setMembers([...members, newMember]);
+                    updatedMembers = [...members, newMember];
                 }
-
+                
+                setMembers(updatedMembers);
                 resetForm();
+                
+                // Exibe uma dica visual pedindo para salvar na nuvem
+                setSyncMessage('Lembre-se de salvar na nuvem!');
+                setTimeout(() => setSyncMessage(''), 4000);
             };
 
             const handleEdit = (member) => {
@@ -109,6 +233,8 @@
                 if (window.confirm("Tem certeza que deseja excluir este profissional da equipe?")) {
                     setMembers(members.filter(m => m.id !== id));
                     if (editingId === id) resetForm();
+                    setSyncMessage('Lembre-se de salvar na nuvem!');
+                    setTimeout(() => setSyncMessage(''), 4000);
                 }
             };
 
@@ -162,8 +288,17 @@
                                     <p className="text-xs md:text-sm text-zinc-500 font-medium">Villa dos Anjos</p>
                                 </div>
                             </div>
-                            <div className="hidden md:flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded-lg font-bold border border-amber-200">
-                                <i className="fa-solid fa-users"></i> {members.length} Profissionais
+                            <div className="flex items-center gap-3">
+                                {syncMessage && <span className="hidden md:inline-block text-xs font-bold text-amber-600 animate-pulse">{syncMessage}</span>}
+                                
+                                <button onClick={saveEquipeToCloud} disabled={isSyncing} className="flex items-center gap-2 text-white bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-lg font-bold shadow-md transition-colors">
+                                    {isSyncing ? <span className="loader border-white border-t-transparent"></span> : <i className="fa-solid fa-cloud-arrow-up"></i>} 
+                                    <span className="hidden sm:inline">Salvar na Nuvem</span>
+                                </button>
+                                
+                                <div className="hidden lg:flex items-center gap-2 text-amber-600 bg-amber-50 px-4 py-2 rounded-lg font-bold border border-amber-200">
+                                    <i className="fa-solid fa-users"></i> {members.length} Profissionais
+                                </div>
                             </div>
                         </div>
                     </header>
@@ -264,7 +399,7 @@
                                                     </div>
                                                     <div>
                                                         <h3 className="font-bold text-zinc-900 leading-tight">{member.name}</h3>
-                                                        <p className="text-xs text-zinc-500">Adicionado recentemente</p>
+                                                        <p className="text-xs text-zinc-500">Membro da Equipe</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
@@ -310,23 +445,5 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-    
-    <style>
-        /* Personalização da barra de rolagem do box de funções */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f4f4f5; 
-            border-radius: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #d4d4d8; 
-            border-radius: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a1a1aa; 
-        }
-    </style>
 </body>
 </html>
