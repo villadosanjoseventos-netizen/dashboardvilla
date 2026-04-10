@@ -1,0 +1,35 @@
+[
+  {
+    "id": "evt_Tm92byBUZXN0ZSB_entrada",
+    "payments": [
+      {
+        "id": "32bc7268-7bd4-4aa9-95ba-d7be3507bf50",
+        "date": "2026-04-10",
+        "amount": 1000,
+        "method": "PIX"
+      }
+    ]
+  },
+  {
+    "id": "evt_Tm92byBUZXN0ZSB_parc_1",
+    "payments": [
+      {
+        "id": "2bca6ff7-7eea-4160-a41b-4697d268cbd8",
+        "date": "2026-04-10",
+        "amount": 640,
+        "method": "PIX"
+      }
+    ]
+  },
+  {
+    "id": "evt_VGVzdGUgQXR1YWw_entrada",
+    "payments": [
+      {
+        "id": "932308ed-9dbe-41ad-9f96-47cc252c2c8a",
+        "date": "2026-04-10",
+        "amount": 2000,
+        "method": "PIX"
+      }
+    ]
+  }
+]
