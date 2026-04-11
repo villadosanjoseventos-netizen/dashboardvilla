@@ -1,0 +1,76 @@
+{
+  "id": "evt_SW5kaXJhIE5vdm8",
+  "cliente": "Indira Novo",
+  "telefone": "987886",
+  "data_evento": "2026-04-10",
+  "horario": "14h às 21h",
+  "convidados": 30,
+  "valor_total": 5784.5,
+  "tipo_evento": "Casamento",
+  "status_pagamento": "Pendente",
+  "data_criacao": "2026-04-11T00:03:06.061Z",
+  "financeiro": {
+    "tipo_pagamento": "parcelado",
+    "data_pagamento_avista": "",
+    "entrada_valor": 0,
+    "entrada_data": "",
+    "entrada_metodo": "PIX",
+    "entrada_parcelas_cartao": 2,
+    "saldo_qtd_parcelas": 1,
+    "saldo_valor_parcela": 0,
+    "saldo_data_primeira": "",
+    "saldo_metodo": "PIX"
+  },
+  "raw_data": {
+    "clientName": "Indira Novo",
+    "clientPhone": "987886",
+    "guests": 30,
+    "selectedDate": "2026-04-10",
+    "eventTime": "14h às 21h",
+    "includeServiceTax": true,
+    "hasDecoration": true,
+    "decorationType": "Casamento",
+    "decorationLevel": "Simples",
+    "ceremonyOnSite": false,
+    "churchDecoration": "Não",
+    "hasBuffet": true,
+    "buffetFixedSelections": {},
+    "buffetVarSelections": {},
+    "hasCake": false,
+    "hasBeverages": true,
+    "beverageSelection": "sem_alcool",
+    "drinkSelection": "sem_drinks",
+    "hasServices": true,
+    "servicesSelections": {
+      "garcons": {
+        "selected": true,
+        "qty": 2
+      },
+      "seguranca": {
+        "selected": true,
+        "qty": 1
+      },
+      "cozinha": {
+        "selected": true,
+        "qty": 1
+      }
+    },
+    "hasEntertainment": true,
+    "entertainmentSelections": {},
+    "clientCPF": "",
+    "clientRG": "",
+    "clientAddress": "",
+    "hasDiscount": false,
+    "discountPercent": 5,
+    "payType": "parcelado",
+    "cashDate": "",
+    "dpValue": "",
+    "dpDate": "",
+    "dpMethod": "PIX",
+    "dpInstallments": 2,
+    "instCount": 1,
+    "instValue": "",
+    "instFirstDate": "",
+    "instMethod": "PIX"
+  }
+}
