@@ -1,0 +1,436 @@
+{
+  "id": "evt_QW5hIE1hcmlhMjA",
+  "cliente": "Ana Maria",
+  "telefone": "98790870",
+  "data_evento": "2026-04-15",
+  "horario": "14h às 21h",
+  "convidados": 100,
+  "valor_total": 37375,
+  "tipo_evento": "Casamento",
+  "status_pagamento": "Pendente",
+  "data_criacao": "2026-04-15T19:32:24.578Z",
+  "financeiro": {
+    "tipo_pagamento": "avista",
+    "data_pagamento_avista": "",
+    "entrada_valor": 0,
+    "entrada_data": "",
+    "entrada_metodo": "PIX",
+    "entrada_parcelas_cartao": 2,
+    "saldo_qtd_parcelas": 1,
+    "saldo_valor_parcela": 0,
+    "saldo_data_primeira": "",
+    "saldo_metodo": "PIX"
+  },
+  "raw_data": {
+    "clientName": "Ana Maria",
+    "clientPhone": "98790870",
+    "guests": 100,
+    "selectedDate": "2026-04-15",
+    "eventTime": "14h às 21h",
+    "eventType": "Casamento",
+    "includeServiceTax": true,
+    "onlySpace": false,
+    "noAlcohol": false,
+    "ceremonyOnSite": false,
+    "churchDecoration": "Super Luxo",
+    "hasDiscount": false,
+    "discountPercent": 5,
+    "pricingDBSnapshot": {
+      "configuracoes_gerais": {
+        "custo_base_por_convidado": {
+          "descricao": "Custo base fixo por pessoa",
+          "preco_venda": 10,
+          "preco_custo": 4.5
+        },
+        "taxa_servico_percentual": 15
+      },
+      "locacao_espaco_diarias": {
+        "segunda_a_quinta": {
+          "preco_venda": 1500,
+          "preco_custo": 500
+        },
+        "sexta_ou_domingo": {
+          "preco_venda": 2300,
+          "preco_custo": 800
+        },
+        "sabado": {
+          "preco_venda": 3000,
+          "preco_custo": 1000
+        },
+        "feriado_ou_vespera": {
+          "preco_venda": 2300,
+          "preco_custo": 800
+        },
+        "feriado_prolongado": {
+          "preco_venda": 3000,
+          "preco_custo": 1000
+        }
+      },
+      "decoracao": {
+        "valores_fixos_por_padrao": {
+          "Simples": {
+            "preco_venda": 1000,
+            "preco_custo": 600
+          },
+          "Completa": {
+            "preco_venda": 1200,
+            "preco_custo": 750
+          },
+          "Luxo": {
+            "preco_venda": 1500,
+            "preco_custo": 900
+          }
+        },
+        "decoracao_igreja": {
+          "Não": {
+            "preco_venda": 0,
+            "preco_custo": 0
+          },
+          "Simples": {
+            "preco_venda": 1500,
+            "preco_custo": 800
+          },
+          "Completa": {
+            "preco_venda": 2500,
+            "preco_custo": 1300
+          },
+          "Luxo": {
+            "preco_venda": 3500,
+            "preco_custo": 1800
+          },
+          "Super Luxo": {
+            "preco_venda": 5000,
+            "preco_custo": 2500
+          }
+        }
+      },
+      "buffet_fixo": [
+        {
+          "id": "self_service",
+          "label": "Buffet Self Service",
+          "preco_venda": 35,
+          "preco_custo": 18
+        },
+        {
+          "id": "asiatico",
+          "label": "Buffet Asiático",
+          "preco_venda": 35,
+          "preco_custo": 18
+        },
+        {
+          "id": "degustacao_premium",
+          "label": "Mesa Degustação Premium",
+          "preco_venda": 30,
+          "preco_custo": 15
+        },
+        {
+          "id": "degustacao_standard",
+          "label": "Mesa Degustação Standard",
+          "preco_venda": 25,
+          "preco_custo": 12
+        },
+        {
+          "id": "ilha_massas",
+          "label": "Ilha de Massas",
+          "preco_venda": 25,
+          "preco_custo": 12
+        },
+        {
+          "id": "mexicano",
+          "label": "Buffet Mexicano",
+          "preco_venda": 25,
+          "preco_custo": 12
+        },
+        {
+          "id": "mesa_frios",
+          "label": "Mesa de Frios",
+          "preco_venda": 20,
+          "preco_custo": 9
+        }
+      ],
+      "buffet_variavel": [
+        {
+          "id": "salgados_trad",
+          "label": "Salgados Tradicionais",
+          "preco_venda": 2.2,
+          "preco_custo": 0.9
+        },
+        {
+          "id": "salgados_finos",
+          "label": "Salgados Finos",
+          "preco_venda": 2.7,
+          "preco_custo": 1.2
+        },
+        {
+          "id": "doces_trad",
+          "label": "Doces Tradicionais",
+          "preco_venda": 2.2,
+          "preco_custo": 0.9
+        },
+        {
+          "id": "doces_finos",
+          "label": "Doces Finos",
+          "preco_venda": 2.7,
+          "preco_custo": 1.2
+        }
+      ],
+      "bebidas": [
+        {
+          "id": "sem_alcool",
+          "label": "Sem Álcool",
+          "preco_venda": 8,
+          "preco_custo": 3.5
+        },
+        {
+          "id": "com_alcool",
+          "label": "Com Álcool",
+          "preco_venda": 15,
+          "preco_custo": 7
+        },
+        {
+          "id": "com_alcool_premium",
+          "label": "Com Álcool Premium",
+          "preco_venda": 22,
+          "preco_custo": 11
+        }
+      ],
+      "servicos_equipe": [
+        {
+          "id": "seguranca",
+          "label": "Portaria e Segurança",
+          "preco_venda": 180,
+          "preco_custo": 120
+        },
+        {
+          "id": "limpeza",
+          "label": "Limpeza",
+          "preco_venda": 150,
+          "preco_custo": 100
+        },
+        {
+          "id": "garcons",
+          "label": "Garçons",
+          "preco_venda": 180,
+          "preco_custo": 120
+        },
+        {
+          "id": "maitre",
+          "label": "Maître",
+          "preco_venda": 250,
+          "preco_custo": 160
+        }
+      ],
+      "entretenimento": [
+        {
+          "id": "son_standard",
+          "label": "Sonorização Simples",
+          "preco_venda": 600,
+          "preco_custo": 300
+        },
+        {
+          "id": "dj_premium",
+          "label": "DJ Premium",
+          "preco_venda": 1500,
+          "preco_custo": 700
+        },
+        {
+          "id": "banda_standard",
+          "label": "Banda Standard",
+          "preco_venda": 1800,
+          "preco_custo": 1000
+        }
+      ],
+      "composicoes": [],
+      "midia": {
+        "videos_youtube": [
+          {
+            "id": "vid1",
+            "titulo": "Tour Villa dos Anjos",
+            "url": "https://www.youtube.com/watch?v=exemplo1"
+          }
+        ],
+        "imagens_destaque": []
+      },
+      "pacotes_prontos": {
+        "unique": {
+          "nome": "Villa Unique",
+          "preco_venda": 160,
+          "itens": []
+        },
+        "exclusive": {
+          "nome": "Villa Exclusive",
+          "preco_venda": 250,
+          "itens": []
+        },
+        "supreme": {
+          "nome": "Villa Suprême",
+          "preco_venda": 390,
+          "itens": []
+        }
+      },
+      "utilizar_pacotes_padrao": true,
+      "pacotes_padrao": {
+        "Casamento": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Aniversário": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Infantil": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Debutante": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Formatura Dia": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Formatura Noite": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Confraternização": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        },
+        "Corporativo": {
+          "unique": {
+            "nome": "Villa Unique",
+            "preco_venda_por_convidado": 160,
+            "preco_custo_por_convidado": 80,
+            "descricao": "Buffet Standard\nBolo e Doces Tradicionais\nBebidas Não Alcoólicas\nSonorização Ambiente"
+          },
+          "exclusive": {
+            "nome": "Villa Exclusive",
+            "preco_venda_por_convidado": 250,
+            "preco_custo_por_convidado": 130,
+            "descricao": "Ilha de Antepastos & Jantar\nDoces Finos e Bolo Clássico\nCerveja Premium Inclusa\nDJ e Iluminação de Pista"
+          },
+          "supreme": {
+            "nome": "Villa Suprême",
+            "preco_venda_por_convidado": 390,
+            "preco_custo_por_convidado": 200,
+            "descricao": "Menu Degustação & Jantar Franco\nMesa de Doces Nobres e Café\nOpen Bar de Drinks & Espumante\nBanda Ao Vivo ou DJ Luxo"
+          }
+        }
+      }
+    }
+  }
+}
