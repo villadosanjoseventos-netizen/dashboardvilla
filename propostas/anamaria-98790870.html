@@ -6,7 +6,7 @@
     <title>Proposta Exclusiva - Villa dos Anjos | Ana Maria</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     <style>
         :root { --color-black: #0a0a0a; --color-black-light: #141414; --color-nude: #e3d5c8; --color-nude-light: #f5ebe1; --color-gold: #d4af37; --color-gold-dark: #aa771c; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--color-black); color: var(--color-nude-light); overflow-x: hidden; scroll-behavior: smooth; }
@@ -55,7 +55,7 @@
     <main>
         <section class="py-32 bg-nude relative">
             <div class="container mx-auto px-6 max-w-4xl reveal text-center">
-                <h2 class="text-4xl md:text-5xl font-serif text-black mb-8 leading-tight">A Consagração do Seu Dia<br>Merece o <span class="italic text-gradient-gold">Cenário Perfeito</span></h2>
+                <h2 class="text-4xl md:text-5xl font-serif text-black mb-8 leading-tight">A Consagração do Seu Dia<br>Merece o <span class="italic text-[#B38728] font-bold">Cenário Perfeito</span></h2>
                 <div class="gold-line w-32 mx-auto !bg-gradient-to-r !from-transparent !to-transparent !via-[#aa771c] mb-8"></div>
                 <p class="text-xl text-gray-900 leading-relaxed font-medium">
                     O requinte mora nos detalhes invisíveis. A Villa dos Anjos preparou esta proposta cuidadosa para garantir que a sua única preocupação seja desfrutar do momento. Oferecemos infraestrutura impecável, natureza integrada e atendimento de excelência.
@@ -99,7 +99,7 @@
 
         
             <section class="py-32 bg-nude relative">
-                <div class="container mx-auto px-6 max-w-6xl reveal">
+                <div class="container mx-auto px-6 max-w-7xl reveal">
                     <div class="text-center mb-16">
                         <p class="uppercase tracking-[0.3em] text-gold-dark text-sm mb-4">Nossa Coleção</p>
                         <h2 class="text-4xl md:text-5xl font-serif text-black mb-6">Opções de Pacotes Completos</h2>
@@ -107,32 +107,51 @@
                         <p class="mt-6 text-gray-700 max-w-2xl mx-auto font-medium">As melhores combinações de serviços desenhadas para o seu evento. Escolha a experiência que melhor se adequa ao seu sonho.</p>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="bg-white p-10 border border-gold/30 hover:shadow-xl rounded-sm transition-all text-center">
-                            <h3 class="font-serif text-2xl text-black mb-2">Villa Unique</h3>
-                            <div class="text-3xl font-serif text-gold-dark mb-6 mt-4">R$ 27.025,00</div>
-                            <ul class="text-sm text-gray-600 space-y-3 text-left border-t border-gray-100 pt-6">
-                                <li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Buffet Standard</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Bolo e Doces Tradicionais</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Bebidas Não Alcoólicas</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Sonorização Ambiente</li>
-                            </ul>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 items-center">
+                        
+                        <!-- SUPREME (Esquerda) -->
+                        <div class="bg-white p-8 md:p-10 border border-gold/40 rounded-2xl shadow-lg relative flex flex-col justify-between h-full mt-4 lg:mt-0 group">
+                            <div class="absolute inset-2 border border-gold/20 rounded-xl pointer-events-none transition-colors group-hover:border-gold/40"></div>
+                            <div class="relative z-10 text-center">
+                                <h3 class="font-serif text-3xl text-black mb-3">Villa Suprême</h3>
+                                <p class="text-xs text-gray-500 font-medium mb-6 leading-relaxed min-h-[60px] flex items-center justify-center">O ápice do luxo All-Inclusive, incorporando entretenimento completo, buffet gourmet e mixologia avançada para impressionar seus convidados.</p>
+                                <div class="text-3xl font-serif text-gold-dark mb-6 border-b border-gray-100 pb-6">R$ 53.475,00</div>
+                                <ul class="text-sm text-gray-600 space-y-3 text-left">
+                                     <li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Menu Degustação & Jantar Franco</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Mesa de Doces Nobres e Café</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Open Bar de Drinks & Espumante</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Banda Ao Vivo ou DJ Luxo</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- EXCLUSIVE (Centro) -->
+                        <div class="bg-luxury-black text-nude-light p-8 md:p-12 border border-gold rounded-2xl shadow-2xl transform lg:scale-110 z-20 relative flex flex-col justify-between h-full my-8 lg:my-0">
+                            <div class="absolute inset-2 border border-gold/30 rounded-xl pointer-events-none"></div>
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gold text-black text-[10px] font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-full z-30 shadow-md whitespace-nowrap">
+                                Mais Escolhido
+                            </div>
+                            
+                            <div class="relative z-10 text-center mt-2">
+                                <h3 class="font-serif text-4xl text-gold mb-3">Villa Exclusive</h3>
+                                <p class="text-xs text-gray-300 font-medium mb-6 leading-relaxed min-h-[60px] flex items-center justify-center">A experiência clássica da Villa dos Anjos, equilibrando perfeitamente requinte e investimento inteligente.</p>
+                                <div class="text-4xl font-serif text-gradient-gold mb-6 border-b border-gray-800 pb-6">R$ 37.375,00</div>
+                                <ul class="text-sm text-gray-300 space-y-3 text-left">
+                                    <li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Ilha de Antepastos & Jantar</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Doces Finos e Bolo Clássico</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Cerveja Premium Inclusa</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> DJ e Iluminação de Pista</li>
+                                </ul>
+                            </div>
                         </div>
                         
-                        <div class="bg-luxury-black text-nude-light p-10 border border-gray-700 hover:shadow-xl rounded-sm transition-all text-center relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(212,175,55,0.1)_0%,_transparent_60%)]"></div>
-                            <div class="text-gold text-[10px] font-bold uppercase tracking-widest mb-4 bg-gold/10 inline-block px-3 py-1 rounded-full border border-gold/20 relative z-10">Mais Escolhido</div>
-                            <h3 class="font-serif text-3xl mb-2 relative z-10">Villa Exclusive</h3>
-                            <div class="text-4xl font-serif text-gradient-gold mb-6 mt-4 relative z-10">R$ 37.375,00</div>
-                            <ul class="text-sm text-gray-300 space-y-3 text-left border-t border-gray-800 pt-6 relative z-10">
-                                <li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Ilha de Antepastos & Jantar</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Doces Finos e Bolo Clássico</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Cerveja Premium Inclusa</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> DJ e Iluminação de Pista</li>
-                            </ul>
+                        <!-- UNIQUE (Direita) -->
+                        <div class="bg-white p-8 md:p-10 border border-gold/40 rounded-2xl shadow-lg relative flex flex-col justify-between h-full mb-4 lg:mb-0 group">
+                            <div class="absolute inset-2 border border-gold/20 rounded-xl pointer-events-none transition-colors group-hover:border-gold/40"></div>
+                            <div class="relative z-10 text-center">
+                                <h3 class="font-serif text-3xl text-black mb-3">Villa Unique</h3>
+                                <p class="text-xs text-gray-500 font-medium mb-6 leading-relaxed min-h-[60px] flex items-center justify-center">Para quem busca a beleza do ambiente aliada à gastronomia de alta qualidade, focando no essencial.</p>
+                                <div class="text-3xl font-serif text-gold-dark mb-6 border-b border-gray-100 pb-6">R$ 27.025,00</div>
+                                <ul class="text-sm text-gray-600 space-y-3 text-left">
+                                    <li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Buffet Standard</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Bolo e Doces Tradicionais</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Bebidas Não Alcoólicas</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Sonorização Ambiente</li>
+                                </ul>
+                            </div>
                         </div>
                         
-                        <div class="bg-white p-10 border border-gold/30 hover:shadow-xl rounded-sm transition-all text-center">
-                            <h3 class="font-serif text-2xl text-black mb-2">Villa Suprême</h3>
-                            <div class="text-3xl font-serif text-gold-dark mb-6 mt-4">R$ 53.475,00</div>
-                            <ul class="text-sm text-gray-600 space-y-3 text-left border-t border-gray-100 pt-6">
-                                 <li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Menu Degustação & Jantar Franco</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Mesa de Doces Nobres e Café</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Open Bar de Drinks & Espumante</li><li class="flex items-start gap-2"><span class="text-gold mt-1">✦</span> Banda Ao Vivo ou DJ Luxo</li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -147,9 +166,9 @@
                 </div>
                 <div class="border-gradient-gold p-1 md:p-2 bg-gradient-to-b from-gold/20 to-transparent max-w-4xl mx-auto rounded-sm">
                     <div class="bg-luxury-black p-10 md:p-16 text-center rounded-sm">
-                        <p class="uppercase tracking-[0.4em] text-gold text-sm mb-6">Investimento Referência (Pacote Exclusive)</p>
-                        <div class="text-6xl md:text-8xl font-serif mb-4 text-gradient-gold">R$ 37.375<span class="text-3xl">,00</span></div>
-                        <p class="text-gray-400 font-light tracking-widest text-xs uppercase mb-16 pb-12 border-b border-white/10">Orçamento formatado para 100 Convidados</p>
+                        <p class="uppercase tracking-[0.4em] text-gold text-sm mb-6">Condições Especiais</p>
+                        <div class="text-4xl md:text-5xl font-serif mb-4 text-gradient-gold leading-tight">Parcelamento em até<br>12x sem juros</div>
+                        <p class="text-gray-400 font-light tracking-widest text-xs uppercase mb-16 pb-12 border-b border-white/10 mt-4">Orçamento formatado para 100 Convidados</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
                             <div class="bg-white/5 p-8 border border-gold/30 rounded-sm hover:border-gold transition-colors duration-300">
                                 <div class="text-gold text-3xl mb-4">💳</div>
@@ -166,7 +185,7 @@
                     </div>
                 </div>
                 <p class="text-center text-gold/60 text-xs mt-8 uppercase tracking-widest font-light">
-                    * Valor em destaque referente ao pacote Villa Exclusive. Consulte acima os valores dos demais pacotes.<br>Proposta válida por 7 dias (até 22 de Abril de 2026)
+                    * Proposta válida por 7 dias (até 22 de Abril de 2026)
                 </p>
             </div>
         </section>
@@ -174,7 +193,7 @@
         <section class="py-32 bg-nude relative border-t border-gold/20">
             <div class="container mx-auto px-6 reveal">
                 <div class="max-w-4xl mx-auto text-center">
-                    <h2 class="text-4xl md:text-6xl font-serif text-black mb-8 leading-tight">A Sua Data <br><span class="italic text-gradient-gold">Está Disponível</span></h2>
+                    <h2 class="text-4xl md:text-6xl font-serif text-black mb-8 leading-tight">A Sua Data <br><span class="italic text-[#B38728] font-bold">Está Disponível</span></h2>
                     <div class="text-lg md:text-xl text-gray-900 font-medium leading-relaxed mb-16 max-w-3xl mx-auto">
                         <p>Neste exato momento, o dia <strong>15 de Abril de 2026</strong> encontra-se <span class="font-bold text-black border-b border-gold">livre</span> em nossa agenda.</p>
                         <p class="mt-4 text-base font-light text-gray-800">Tudo o que separa você da tranquilidade de ter a Villa dos Anjos reservada é uma única ação. Garanta a exclusividade do seu evento.</p>
